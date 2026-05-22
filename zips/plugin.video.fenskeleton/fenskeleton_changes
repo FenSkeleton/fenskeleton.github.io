@@ -1,9 +1,0 @@
-FenSkeleton v0.0.1
-- Initial public release.
-- Reset plugin and bundled FenMage skin versions to 0.0.1.
-- Updated GitHub Pages update path to https://fenskeleton.github.io.
-- Updated contact email to fenskeleton@gmail.com.
-- Ported TorBox device-code authorization from v0.1.27.
-- Fixed search-history remake loop.
-- Fixed FenMage search window ID monitor mismatch.
-- Corrected XML declarations for Kodi/repo parsing.
