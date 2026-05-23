@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <addons>
     <addon id="plugin.video.fenskeleton" name="FenSkeleton" provider-name="FenSkeleton" version="0.0.1">
         <requires>
@@ -13,7 +13,7 @@
         <extension point="xbmc.python.module" library="resources/lib/"/>
         <extension point="xbmc.addon.metadata">
             <reuselanguageinvoker>false</reuselanguageinvoker>
-            <summary lang="en">FenSkeleton – lean multi-debrid resolver for TMDbHelper</summary>
+            <summary lang="en">FenSkeleton â€“ lean multi-debrid resolver for TMDbHelper</summary>
             <description lang="en">Fast, minimal debrid resolver built on the stable v0.1.10 engine. Pairs with TMDbHelper for browsing. Supports Real-Debrid, AllDebrid, Premiumize and TorBox. External scrapers such as CocoScrapers are supported. Works with FenMage skin.</description>
             <platform>all</platform>
             <email>fenskeleton@gmail.com</email>
