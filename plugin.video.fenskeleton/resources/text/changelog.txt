@@ -1,7 +1,0 @@
-FenSkeleton v0.0.1
-- Initial public release.
-- Multi-debrid resolver support: Real-Debrid, AllDebrid, Premiumize, and TorBox.
-- TorBox device-code authorization.
-- FenMage skin integration with widget and main menu management.
-- External scraper support.
-- TMDbHelper player integration.
