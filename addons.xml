@@ -1,0 +1,15 @@
+<addons>
+<addon id="plugin.video.fenskeleton" name="FenSkeleton" provider-name="FenSkeleton" version="0.0.2">
+<requires>
+<import addon="xbmc.python" version="3.0.0"/>
+</requires>
+<extension point="xbmc.python.pluginsource" library="resources/lib/fenskeleton.py">
+<provides>video</provides>
+</extension>
+<extension point="xbmc.addon.metadata">
+<summary lang="en">FenSkeleton</summary>
+<description lang="en">FenSkeleton clean repo checkpoint.</description>
+<platform>all</platform>
+</extension>
+</addon>
+</addons>
