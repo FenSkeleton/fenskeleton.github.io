@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+    <category label="FenSkeleton">
+        <setting label="Open FenSkeleton Settings" type="action" option="close" action="RunPlugin(plugin://plugin.video.fenskeleton/?mode=open_settings)"/>
+        <setting label="Authorize Real-Debrid" type="action" option="close" action="RunPlugin(plugin://plugin.video.fenskeleton/?mode=real_debrid.authenticate)"/>
+        <setting label="Authorize AllDebrid" type="action" option="close" action="RunPlugin(plugin://plugin.video.fenskeleton/?mode=alldebrid.authenticate)"/>
+        <setting label="Authorize Premiumize" type="action" option="close" action="RunPlugin(plugin://plugin.video.fenskeleton/?mode=premiumize.authenticate)"/>
+        <setting label="Authorize TorBox" type="action" option="close" action="RunPlugin(plugin://plugin.video.fenskeleton/?mode=torbox.authenticate)"/>
+        <setting label="Open Scraper Settings" type="action" option="close" action="RunPlugin(plugin://plugin.video.fenskeleton/?mode=open_external_scraper_settings)"/>
+    </category>
+</settings>

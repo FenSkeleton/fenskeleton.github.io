@@ -1,0 +1,58 @@
+[COLOR darkgoldenrod][B]FenSkeleton — Setup Guide[/B][/COLOR]
+
+
+[COLOR dodgerblue][B]First Install — Empty Home Screen[/B][/COLOR]
+
+On first install the home screen will be empty. The Movie and TV Show sections will be missing from the main menu. Follow the steps below to set everything up.
+
+
+[COLOR dodgerblue][B]Step 1 — Show the Movie / TV Show sections[/B][/COLOR]
+
+From the home screen go to:
+[B]Settings » Interface » Skin section » Configure skin... » Main menu items[/B]
+
+Click a menu item to toggle it on or off. Toggle the [B]Movies[/B] and [B]TV Shows[/B] sections to [B]ON[/B].
+
+[COLOR goldenrod]NOTE: Even with these toggled on, they won't appear on the home screen until you set a main menu path for them (see Step 2).[/COLOR]
+
+
+[COLOR dodgerblue][B]Step 2 — Set the Main Menu Path[/B][/COLOR]
+
+After toggling a section on, a couple of sub-items will drop down.
+
+Click [B]"Set main menu path"[/B] and choose a path from within FenSkeleton — for example your Trakt Movie or TV Show collection.
+
+
+[COLOR dodgerblue][B]Step 3 — Set Up Widgets[/B][/COLOR]
+
+Click [B]"Set widgets"[/B] to configure up to:
+- 10 Movie widgets
+- 10 TV Show widgets
+
+For each widget you can set:
+  • The source path
+  • A label
+  • Display type: [B]Poster[/B], [B]Landscape[/B], [B]LandscapeInfo[/B], or [B]Category[/B]
+
+If you choose [B]Category[/B] you can also set it up as a stacked widget and choose its display type.
+
+
+[COLOR dodgerblue][B]Step 4 — Editing Widgets After Setup[/B][/COLOR]
+
+Click an existing widget to get a list of options:
+  • Rearrange
+  • Rename
+  • Remake (change path or type)
+  • Remove
+
+You can also rename, remake, or remove the main menu items themselves.
+
+
+[COLOR dodgerblue][B]Reporting Issues[/B][/COLOR]
+
+- Read the [B]Changelog[/B] first (Settings » Changelog & Log Utils).
+- Pre-made builds are [B]not supported[/B].
+- Trakt issues are not skin or addon related — contact the Trakt addon developer.
+- Always include a [B]log file[/B] when reporting errors.
+- Check open issues before opening a new one.
+- Do [B]not[/B] hijack an open issue with an unrelated problem.

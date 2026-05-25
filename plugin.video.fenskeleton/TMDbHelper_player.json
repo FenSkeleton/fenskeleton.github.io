@@ -1,0 +1,10 @@
+{
+    "name"          : "FenSkeleton",
+    "plugin"        : "plugin.video.fenskeleton",
+    "priority"      : 100,
+    "is_resolvable" : "false",
+
+    "play_movie"    : "plugin://plugin.video.fenskeleton/?mode=play&media_type=movie&tmdb_id={tmdb}&imdb_id={imdb}&title={title_url}&year={year}",
+
+    "play_episode"  : "plugin://plugin.video.fenskeleton/?mode=play&media_type=episode&tmdb_id={tmdb}&imdb_id={imdb}&tvdb_id={tvdb}&title={showname_url}&year={year}&season={season}&episode={episode}"
+}
