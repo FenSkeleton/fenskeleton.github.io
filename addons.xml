@@ -1,15 +1,60 @@
 <addons>
-<addon id="plugin.video.fenskeleton" name="FenSkeleton" provider-name="FenSkeleton" version="0.0.3">
-<requires>
-<import addon="xbmc.python" version="3.0.0"/>
-</requires>
-<extension point="xbmc.python.pluginsource" library="resources/lib/fenskeleton.py">
-<provides>video</provides>
-</extension>
-<extension point="xbmc.addon.metadata">
-<summary lang="en">FenSkeleton</summary>
-<description lang="en">FenSkeleton clean repo checkpoint.</description>
-<platform>all</platform>
-</extension>
+
+<addon id="repository.fenskeleton"
+       name="FenSkeleton Repository"
+       provider-name="FenSkeleton"
+       version="1.0.1">
+
+    <extension point="xbmc.addon.repository"
+               name="FenSkeleton Repository">
+
+        <info compressed="false">
+            https://fenskeleton.github.io/addons.xml
+        </info>
+
+        <checksum>
+            https://fenskeleton.github.io/addons.xml.md5
+        </checksum>
+
+        <datadir zip="true">
+            https://fenskeleton.github.io/zips/
+        </datadir>
+
+    </extension>
+
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en">FenSkeleton Repository</summary>
+        <description lang="en">FenSkeleton Kodi Repository</description>
+        <platform>all</platform>
+    </extension>
+
 </addon>
+
+
+<addon id="plugin.video.fenskeleton"
+       name="FenSkeleton"
+       provider-name="FenSkeleton"
+       version="0.0.3">
+
+    <requires>
+        <import addon="xbmc.python" version="3.0.0"/>
+    </requires>
+
+    <extension point="xbmc.python.pluginsource"
+               library="resources/lib/fenskeleton.py">
+
+        <provides>video</provides>
+
+    </extension>
+
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en">FenSkeleton</summary>
+        <description lang="en">
+            FenSkeleton clean repo checkpoint.
+        </description>
+        <platform>all</platform>
+    </extension>
+
+</addon>
+
 </addons>
