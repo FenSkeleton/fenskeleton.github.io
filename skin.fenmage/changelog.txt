@@ -1,0 +1,4 @@
+FenMage v0.0.1
+- Initial public release bundled for FenSkeleton.
+- Widget and main menu management support.
+- FenSkeleton launch integration.
