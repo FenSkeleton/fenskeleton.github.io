@@ -61,3 +61,4 @@ class ExternalCache(object):
 		dbcon.close()
 
 external_cache = ExternalCache()
+

@@ -121,3 +121,4 @@ def single_seasons(seasons_list):
 	threads = TaskPool().tasks(lambda x: season_results.append(build_season_list(x)), seasons_list, min(len(seasons_list), settings.max_threads()))
 	[i.join() for i in threads]
 	return [i for i in season_results if i]
+

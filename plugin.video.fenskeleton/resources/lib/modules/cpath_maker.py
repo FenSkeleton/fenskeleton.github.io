@@ -764,3 +764,4 @@ def show_busy_dialog():
 def hide_busy_dialog():
     xbmc.executebuiltin("Dialog.Close(busydialognocancel)")
     xbmc.executebuiltin("Dialog.Close(busydialog)")
+

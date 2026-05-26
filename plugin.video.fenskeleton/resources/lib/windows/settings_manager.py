@@ -18,3 +18,4 @@ class SettingsManagerFolders(BaseDialog):
 	def run(self):
 		self.doModal()
 		self.clearProperties()
+

@@ -567,3 +567,4 @@ def fetch_kodi_imagecache(image):
 		result = dbcur.fetchone()[0]
 	except: pass
 	return result
+

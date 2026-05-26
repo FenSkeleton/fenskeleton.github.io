@@ -95,3 +95,4 @@ def widget_monitor(list_id):
         del window
     except:
         pass
+

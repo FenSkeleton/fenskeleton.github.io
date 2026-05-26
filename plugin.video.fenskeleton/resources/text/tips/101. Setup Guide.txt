@@ -56,3 +56,4 @@ You can also rename, remake, or remove the main menu items themselves.
 - Always include a [B]log file[/B] when reporting errors.
 - Check open issues before opening a new one.
 - Do [B]not[/B] hijack an open issue with an unrelated problem.
+

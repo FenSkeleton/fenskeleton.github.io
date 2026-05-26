@@ -223,3 +223,4 @@ def matrix_iter_verbose(matrix, matrix_size, scale=1, border=None):
         row = tuple(chain.from_iterable(repeat(get_bit(i, j), scale) for j in width_range))
         for s in repeat(None, scale):
             yield row
+

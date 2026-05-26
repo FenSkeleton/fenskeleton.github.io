@@ -90,7 +90,7 @@ def addon_icon_choice(params):
 	import shutil
 	import urllib.request
 	from xml.dom.minidom import parse as mdParse
-	large_image_url = 'https://fenskeleton.github.io/packages/addon_icons/%s'
+	large_image_url = 'https://raw.githubusercontent.com/FenSkeleton/fenskeleton.github.io/main/packages/addon_icons/%s'
 	small_image_url = large_image_url % '/minis/%s'
 	set_icon = params.get('set_icon')
 	if set_icon: new_name = set_icon
@@ -1144,3 +1144,4 @@ def media_extra_info_choice(params):
 def discover_choice(params):
 	from windows.base_window import open_window
 	open_window(('windows.discover', 'Discover'), 'discover.xml', media_type=params['media_type'])
+

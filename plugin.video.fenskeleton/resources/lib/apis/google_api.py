@@ -69,3 +69,4 @@ def model_present(model_id):
 
 def get_api():
 	return get_setting('fenskeleton.google_api')
+

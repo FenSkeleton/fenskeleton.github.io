@@ -22,3 +22,4 @@ This essentially becomes a list of lists, where one of those lists is chosen at 
 The widget's label will need to be set similarly to the special labels described above, yet this time you will use the Shortcut Folder's name as the value within the special label.
 
 For example, if you have made a Shortcut Folder and named it "My Shortcuts 01" and have added some lists from FenSkeleton into it and assigned it as "Random", then you can make a random widget item by pointing the widget to that folder. The label for the widget, if you want the name of the currently chosen random list to show, would be `$INFO[Window.Property(Fenlight-Skeleton.My Shortcuts 01)]`. As you can see, it follows the same principle as the other dynamic widget labels above. This time you enter the name of the Shortcut Folder you are pointing the widget to.
+

@@ -5,3 +5,4 @@ FenSkeleton v0.0.1
 - FenMage skin integration with widget and main menu management.
 - External scraper support.
 - TMDbHelper player integration.
+

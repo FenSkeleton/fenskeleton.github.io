@@ -46,3 +46,4 @@ def set_image():
     if image_path and not image_path.endswith(("/", "\\")):
         xbmc.executebuiltin("Skin.SetString(HomeFanart.path,%s)" % image_path)
         xbmc.executebuiltin("ReloadSkin()")
+

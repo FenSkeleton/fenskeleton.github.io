@@ -364,3 +364,4 @@ def set_list_custom_sort(params):
 		kodi_utils.ok_dialog('Trakt List Custom Sort', 'Success')
 		kodi_utils.kodi_refresh()
 	else: kodi_utils.ok_dialog('Trakt List Custom Sort', 'An Error Occured')
+

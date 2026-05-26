@@ -22,3 +22,4 @@ class EpisodeGroupsCache:
 		dbcon.execute('VACUUM')
 
 episode_groups_cache = EpisodeGroupsCache()
+

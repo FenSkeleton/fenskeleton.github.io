@@ -418,3 +418,4 @@ class SourcesInfo(BaseDialog):
 		self.setProperty('quality', self.item_get_property('quality').lower())
 		self.setProperty('provider_icon', self.item_get_property('provider_icon'))
 		self.setProperty('quality_icon', self.item_get_property('quality_icon'))
+

@@ -290,3 +290,4 @@ class TVShows:
 			if self.is_external: self.paginate_start = limit
 		else: total_pages = 1
 		return data, total_pages
+

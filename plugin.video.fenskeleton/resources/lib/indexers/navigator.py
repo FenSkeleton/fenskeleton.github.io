@@ -596,3 +596,4 @@ class Navigator:
 		k.set_category(handle, self.category_name)
 		k.end_directory(handle)
 		k.set_view_mode('view.main', '')
+

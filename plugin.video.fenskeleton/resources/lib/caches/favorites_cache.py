@@ -28,3 +28,4 @@ class FavoritesCache:
 		dbcon.execute('VACUUM')
 
 favorites_cache = FavoritesCache()
+

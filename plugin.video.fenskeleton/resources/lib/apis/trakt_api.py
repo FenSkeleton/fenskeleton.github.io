@@ -893,3 +893,4 @@ def trakt_sync_activities(force_update=False):
 			trakt_cache.clear_trakt_list_contents_data(item)
 	# if clear_tvshow_watched_cache: clear_watched_tvshow_cache()
 	return 'success'
+

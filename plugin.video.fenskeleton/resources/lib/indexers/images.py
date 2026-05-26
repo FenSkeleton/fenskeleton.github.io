@@ -239,3 +239,4 @@ class Images():
 		delete_file(thumb_url)
 		delete_file(image_url)
 		hide_busy_dialog()
+

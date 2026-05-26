@@ -169,3 +169,4 @@ def delete_all_ratings():
         dbcon.commit()
         dbcon.close()
         dialog.ok("Fen-Mage", "All ratings cleared.")
+

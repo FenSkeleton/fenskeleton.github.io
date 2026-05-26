@@ -249,3 +249,4 @@ class NavigatorCache:
 				]
 
 navigator_cache = NavigatorCache()
+

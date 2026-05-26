@@ -258,3 +258,4 @@ class FenSkeletonPlayer(xbmc.Player):
 		self.clear_playback_properties()
 		ku.notification('Playback Failed', 3500)
 		return False
+

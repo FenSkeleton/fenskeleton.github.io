@@ -53,3 +53,4 @@ class OMDbAPI:
 		return self.result_get(rating_name, '').replace('N/A', '')
 
 fetch_ratings_info = OMDbAPI().fetch_info
+

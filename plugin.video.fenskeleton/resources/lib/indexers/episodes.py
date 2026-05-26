@@ -406,3 +406,4 @@ def build_single_episode(list_type, params={}):
 	kodi_utils.set_category(handle, _get_category_name())
 	kodi_utils.end_directory(handle, cacheToDisc=False)
 	kodi_utils.set_view_mode('view.episodes_single', 'episodes', is_external)
+

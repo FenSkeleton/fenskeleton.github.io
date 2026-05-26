@@ -189,3 +189,4 @@ def clear_media_results_database():
 	except: process_image_result = False
 	return (process_result, process_image_result) == (True, True)
 
+

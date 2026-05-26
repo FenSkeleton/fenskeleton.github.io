@@ -35,3 +35,4 @@ class Progress(BaseDialog):
 			self.set_percent(5000, percent)
 			if icon: self.set_image(200, icon)
 		except: pass
+

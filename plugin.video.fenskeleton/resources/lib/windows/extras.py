@@ -946,3 +946,4 @@ class ShowTextMedia(BaseDialog):
 			if self.position == self.len_text - 1: self.setProperty('next_display', 'false')
 			else: self.setProperty('next_display', 'true')
 		else: self.setProperty('previous_display', 'false'), self.setProperty('next_display', 'false')
+

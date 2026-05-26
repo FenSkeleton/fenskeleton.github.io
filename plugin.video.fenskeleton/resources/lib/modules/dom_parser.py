@@ -112,3 +112,4 @@ def parse_dom(html, name='', attrs=None, req=False, exclude_comments=False):
 			all_results += results
 	except: pass
 	return all_results
+

@@ -150,3 +150,4 @@ def single_last_watched_episodes(data):
 	return sorted([i for i in sorted(data, key=lambda x: (x['last_played'], x['media_ids']['tmdb'], x['season'], x['episode']), reverse=True)
 				if not (i['media_ids']['tmdb'] in seen or seen_add(i['media_ids']['tmdb']))],
 				key=lambda x: (x['last_played'], x['media_ids']['tmdb'], x['season'], x['episode']), reverse=True)
+

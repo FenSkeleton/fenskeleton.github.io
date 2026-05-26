@@ -23,3 +23,4 @@ class DiscoverCache:
 		dbcon.execute('VACUUM')
 
 discover_cache = DiscoverCache()
+

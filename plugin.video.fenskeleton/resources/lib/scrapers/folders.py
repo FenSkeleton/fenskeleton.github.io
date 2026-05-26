@@ -99,3 +99,4 @@ class source:
 
 	def _season_query_list(self):
 		return ('season%02d' % int(self.season), 'season%s' % self.season)
+

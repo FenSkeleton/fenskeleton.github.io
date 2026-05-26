@@ -123,3 +123,4 @@ class source:
 
 	def _year_query_list(self):
 		return (str(self.year), str(self.year+1), str(self.year-1))
+

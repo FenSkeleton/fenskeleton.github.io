@@ -406,3 +406,4 @@ def manager(foo=None):
 	from windows.base_window import open_window
 	kwargs = {}
 	return open_window(('windows.downloads_manager', 'DownloadsManager'), 'downloads_manager.xml', **kwargs)
+

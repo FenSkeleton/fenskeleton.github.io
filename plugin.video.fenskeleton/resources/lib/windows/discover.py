@@ -243,3 +243,4 @@ class Discover(BaseDialog):
 		self.chosen_item, self.list_item, self.media_type, self.active_attributes, self.label, self.url = None, None, kwargs['media_type'], [], '', ''
 		for key, values in self.discover_items.items():
 			for key_value in ('key', 'display_key'): self.set_attribute(self, values[key_value], '')
+

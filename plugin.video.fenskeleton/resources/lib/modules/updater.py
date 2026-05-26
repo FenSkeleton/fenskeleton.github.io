@@ -131,3 +131,4 @@ def update_addon(new_version, action, show_after_action=True):
 	kodi_utils.disable_enable_addon()
 	kodi_utils.update_kodi_addons_db()
 	kodi_utils.refresh_widgets()
+

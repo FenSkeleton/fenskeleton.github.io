@@ -9,3 +9,4 @@
         <setting label="Open Scraper Settings" type="action" option="close" action="RunPlugin(plugin://plugin.video.fenskeleton/?mode=open_external_scraper_settings)"/>
     </category>
 </settings>
+

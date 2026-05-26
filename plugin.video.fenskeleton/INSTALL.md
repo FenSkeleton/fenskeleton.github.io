@@ -29,3 +29,4 @@ Trakt scrobbles automatically via TMDbHelper.
 
 ## That's it
 Browse in TMDbHelper, hit play, FenSkeleton scrapes and plays.
+

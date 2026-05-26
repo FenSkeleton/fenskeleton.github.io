@@ -87,3 +87,4 @@ class DownloadsManager(BaseDialog):
 			self.position = self.get_position(self.window_id)
 			self.reset_window(self.window_id)
 			self.make_active_downloads()
+

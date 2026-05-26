@@ -863,3 +863,4 @@ class Sources():
 
 	def _quality_length_final(self, items, dummy):
 		return len(items)
+

@@ -1089,3 +1089,4 @@ class _StructuredAppendInfo(tuple):
     number = property(itemgetter(1))
     total = property(itemgetter(2))
     parity = property(itemgetter(3))
+

@@ -179,3 +179,4 @@ class QRCodeSequence(tuple):
         if len(self) == 1:
             return getattr(self[0], item)
         raise AttributeError(f"{self.__class__} object has no attribute '{item}'")
+

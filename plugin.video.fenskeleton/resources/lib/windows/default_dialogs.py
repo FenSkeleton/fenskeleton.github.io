@@ -150,3 +150,4 @@ class OK(BaseDialog):
 		self.setProperty('ok_label', self.ok_label)
 		self.setProperty('text', self.text)
 		self.setProperty('heading', self.heading)
+

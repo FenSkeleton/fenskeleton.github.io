@@ -117,3 +117,4 @@ def ai_similar_call(media_type, tmdb_id, meta, limit, timeout=30):
 	data = response.json()
 	result = model_info['similar']['parse'](data)
 	return result
+

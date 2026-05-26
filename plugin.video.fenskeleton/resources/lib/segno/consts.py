@@ -782,3 +782,4 @@ TYPE_QUIET_ZONE = 18
 """\
 Border of light modules.
 """
+

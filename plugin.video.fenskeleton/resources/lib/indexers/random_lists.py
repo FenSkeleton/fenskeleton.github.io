@@ -402,3 +402,4 @@ def random_shortcut_folders(folder_name, random_results):
 		from indexers.tmdb_lists import build_tmdb_list
 		return build_tmdb_list(random_list)
 	return kodi_utils.end_directory(int(sys.argv[1]))
+

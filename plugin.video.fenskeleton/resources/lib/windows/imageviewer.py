@@ -171,3 +171,4 @@ class ImageViewer(BaseDialog):
 		self.setProperty('item_count', str(len(self.item_list)))
 		self.setProperty('fanart', addon_fanart())
 		self.setProperty('backup_thumbnail', self.backup_thumbnail)
+

@@ -41,3 +41,4 @@ def cache_object(function, string, args, json=True, expiration=24):
 	else: result = function(*args)
 	main_cache.set(string, result, expiration=expiration)
 	return result
+

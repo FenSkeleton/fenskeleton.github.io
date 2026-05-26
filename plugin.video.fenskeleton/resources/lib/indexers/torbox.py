@@ -99,3 +99,4 @@ def tb_account_info():
 		return kodi_utils.show_text('TorBox'.upper(), '\n\n'.join(body), font_size='large')
 	except: kodi_utils.hide_busy_dialog()
 
+

@@ -324,3 +324,4 @@ class BaseCache(object):
 
 	def manual_connect(self, dbfile):
 		return connect_database(dbfile)
+

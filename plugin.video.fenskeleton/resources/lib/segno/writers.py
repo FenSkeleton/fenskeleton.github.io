@@ -1077,3 +1077,4 @@ def save(matrix, matrix_size, out, kind=None, **kw):
             serializer(matrix, matrix_size, f, **kw)
     else:
         serializer(matrix, matrix_size, out, **kw)
+

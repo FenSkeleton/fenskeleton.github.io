@@ -26,3 +26,4 @@ class TextViewer(BaseDialog):
 		self.setProperty('text', self.text)
 		self.setProperty('heading', self.heading)
 		self.setProperty('font_size', self.font_size)
+

@@ -195,3 +195,4 @@ def remake_all_spaths(silent=False):
         SPaths(item).remake_search_history()
     if not silent:
         xbmcgui.Dialog().ok("Fen-Mage", "Search history remade")
+

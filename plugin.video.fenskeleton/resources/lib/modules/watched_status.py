@@ -490,3 +490,4 @@ def get_recently_watched(media_type, short_list=0):
 					for i in data]
 		if short_list: data = data[:20]
 	return data
+

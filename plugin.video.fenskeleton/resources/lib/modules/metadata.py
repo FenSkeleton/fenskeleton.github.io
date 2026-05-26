@@ -430,3 +430,4 @@ def is_anime_check(meta=None, tmdb_id=None):
 		list(map(itemgetter('id'), meta.get('keywords').get('results', []))).index(210024)
 		return True
 	except: return False
+

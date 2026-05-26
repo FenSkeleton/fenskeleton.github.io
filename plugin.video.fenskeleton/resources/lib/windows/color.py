@@ -59,3 +59,4 @@ class SelectColor(BaseDialog):
 			ok_dialog(text='Value must begin with [B]FF[/B], be [B]8[/B] characters in length and be [B]Alphanumeric[/B].[CR][CR]Please try again..')
 			return self.color_input()
 		return color_value
+

@@ -277,3 +277,4 @@ class MenuEditor:
 			icon_var = [i for i in all_icons if i == icon_value][0]
 		except: icon_var = 'folder'
 		return icon_var
+

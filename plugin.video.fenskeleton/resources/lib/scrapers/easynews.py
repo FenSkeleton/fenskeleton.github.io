@@ -55,3 +55,4 @@ class source:
 	def _search_name(self):
 		if self.media_type == 'movie': return '%s %d' % (self.search_title, self.year)
 		else: return '%s S%02dE%02d' % (self.search_title,  self.season, self.episode)
+

@@ -272,3 +272,4 @@ class People(BaseDialog):
 		self.setProperty('age', str(self.person_age))
 		self.setProperty('enable_scrollbars', self.enable_scrollbars)
 		self.setProperty('easynews_authorized', 'true' if easynews_authorized() else 'false')
+
