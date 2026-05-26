@@ -1,5 +1,6 @@
-<addons>
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addons>
+
 <addon id="plugin.video.fenskeleton" name="FenSkeleton" provider-name="FenSkeleton" version="0.0.4">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
@@ -29,7 +30,7 @@ v0.0.1 - Initial public release.</news>
     </extension>
 </addon>
 
-<?xml version="1.0" encoding="UTF-8"?>
+
 <addon id="skin.fenmage" version="0.0.1" name="Fen-Mage"
 	provider-name="FenSkeleton">
 	<requires>
