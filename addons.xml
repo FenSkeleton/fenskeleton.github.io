@@ -32,7 +32,7 @@ v0.0.1 - Initial public release.</news>
 
 
 
-<addon id="skin.fenmage" version="0.0.1" name="Fen-Mage"
+<addon id="skin.fenmage" version="0.0.2" name="Fen-Mage"
 	provider-name="FenSkeleton">
 	<requires>
 		<import addon="xbmc.gui" version="5.17.0" />
