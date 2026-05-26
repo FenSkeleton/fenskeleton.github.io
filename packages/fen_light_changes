@@ -1,0 +1,6 @@
+FenSkeleton v0.0.4
+
+- Added / fixed Random Next Up update visibility.
+- Rebuilt plugin package.
+- Updated repo metadata.
+- Cleaned FenMage search links to point at FenSkeleton.
