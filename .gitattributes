@@ -1,0 +1,5 @@
+﻿* text=auto
+*.xml text eol=lf
+*.md5 text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf

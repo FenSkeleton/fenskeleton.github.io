@@ -20,9 +20,48 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Generate addons.xml and MD5
+        run: |
+          python3 << 'EOF'
+          import hashlib
+
+          def read(path):
+              with open(path, 'r', encoding='utf-8-sig') as f:
+                  return f.read()
+
+          def strip_header(xml):
+              lines = xml.splitlines()
+              return '\n'.join(
+                  line for line in lines
+                  if not line.strip().startswith('<?xml')
+              ).strip()
+
+          plugin = read('plugin.video.fenskeleton/addon.xml')
+          skin = read('skin.fenmage/addon.xml')
+          repo = read('repository.fenskeleton/addon.xml')
+
+          content = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
+          content += '<addons>\n'
+          content += strip_header(plugin) + '\n\n'
+          content += strip_header(skin) + '\n\n'
+          content += strip_header(repo) + '\n'
+          content += '</addons>\n'
+
+          with open('addons.xml', 'w', encoding='utf-8', newline='\n') as f:
+              f.write(content)
+
+          md5 = hashlib.md5(content.encode('utf-8')).hexdigest()
+
+          with open('addons.xml.md5', 'w', encoding='ascii', newline='\n') as f:
+              f.write(md5)
+
+          print(f'addons.xml generated. MD5: {md5}')
+          EOF
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
