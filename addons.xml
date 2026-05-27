@@ -24,4 +24,61 @@
             <icon>icon.png</icon>
             <fanart>fanart.jpg</fanart>
         </assets>
-        <news>v0.0.3 - Clean video-addon package: removed embedded skin bundle; fixed Random Next Episodes to actually shuffle Next Up; ret
+        <news>v0.0.3 - Clean video-addon package: removed embedded skin bundle; fixed Random Next Episodes to actually shuffle Next Up; retained TorBox device-code auth and icon set.
+v0.0.2 - v1 base checkpoint: TorBox device-code auth retained; Random Next Episodes route added; updated icon set retained.
+v0.0.1 - Initial public release.</news>
+    </extension>
+</addon>
+
+<addon id="skin.fenmage" version="0.0.2" name="Fen-Mage" provider-name="FenSkeleton">
+    <requires>
+        <import addon="xbmc.gui" version="5.17.0" />
+    </requires>
+    <extension point="xbmc.gui.skin" debugging="false">
+        <res width="1920" height="1440" aspect="4:3" default="false" folder="xml" />
+        <res width="1920" height="1280" aspect="3:2" default="false" folder="xml" />
+        <res width="1920" height="1200" aspect="16:10" default="false" folder="xml" />
+        <res width="2040" height="1080" aspect="17:9" default="false" folder="xml" />
+        <res width="1920" height="1080" aspect="16:9" default="true" folder="xml" />
+        <res width="2560" height="1080" aspect="21:9" default="false" folder="xml" />
+        <res width="2338" height="1080" aspect="19.5:9" default="false" folder="xml" />
+        <res width="2160" height="1080" aspect="18:9" default="false" folder="xml" />
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <platform>all</platform>
+        <email>fenskeleton@gmail.com</email>
+        <license>CC BY-SA 4.0, GNU GENERAL PUBLIC LICENSE Version 2.0</license>
+        <forum>http://forum.kodi.tv/</forum>
+        <source>https://fenskeleton.github.io</source>
+        <assets>
+            <icon>resources/icon.png</icon>
+            <fanart>resources/fanart.jpg</fanart>
+            <screenshot>resources/images/customizable_widgets.jpg</screenshot>
+            <screenshot>resources/images/infopanel.jpg</screenshot>
+            <screenshot>resources/images/viewtypes1.jpg</screenshot>
+        </assets>
+        <summary lang="en_GB">Thanks to Ivar - Estuary Mod!</summary>
+        <summary lang="en_NZ">Thanks to Ivar - Estuary Mod!</summary>
+        <summary lang="en_US">Thanks to Ivar - Estuary Mod!</summary>
+        <description lang="en_GB">Fen-Mage is the best way to view FenSkeleton. Built on Ivar Brandt's FenMage (Estuary MOD).[CR][CR]See Skin settings » Extra info to set up the skin.[CR][CR]See [B]CHANGELOG[/B] located in Skin settings » Extra info for latest changes.</description>
+        <description lang="en_NZ">Fen-Mage is the best way to view FenSkeleton. Built on Ivar Brandt's FenMage (Estuary MOD).[CR][CR]See Skin settings » Extra info to set up the skin.[CR][CR]See [B]CHANGELOG[/B] located in Skin settings » Extra info for latest changes.</description>
+        <description lang="en_US">Fen-Mage is the best way to view FenSkeleton. Built on Ivar Brandt's FenMage (Estuary MOD).[CR][CR]See Skin settings » Extra info to set up the skin.[CR][CR]See [B]CHANGELOG[/B] located in Skin settings » Extra info for latest changes.</description>
+    </extension>
+</addon>
+
+<addon id="repository.fenskeleton" name="FenSkeleton Repository" version="1.0.1" provider-name="FenSkeleton">
+    <extension point="xbmc.addon.repository" name="FenSkeleton Repository">
+        <dir>
+            <info compressed="false">https://fenskeleton.github.io/addons.xml</info>
+            <checksum>https://fenskeleton.github.io/addons.xml.md5</checksum>
+            <datadir zip="true">https://fenskeleton.github.io/zips/</datadir>
+        </dir>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary>FenSkeleton Kodi Repository</summary>
+        <description>Repository for FenSkeleton and FenMage.</description>
+        <platform>all</platform>
+    </extension>
+</addon>
+
+</addons>
