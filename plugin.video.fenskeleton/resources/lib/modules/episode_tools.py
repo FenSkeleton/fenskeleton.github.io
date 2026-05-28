@@ -5,9 +5,9 @@ import random
 from datetime import date
 from modules.sources import Sources
 from modules.settings import date_offset, watched_indicators, ignore_articles, playback_key, max_threads
-from modules.metadata import episodes_meta, all_episodes_meta
+from modules.metadata import episodes_meta, all_episodes_meta, tvshow_meta
 from modules.watched_status import get_watched_status_episode, get_next_episodes, get_hidden_progress_items, watched_info_episode, get_next
-from modules.utils import adjust_premiered_date, get_datetime, title_key, TaskPool
+from modules.utils import adjust_premiered_date, get_datetime, get_current_timestamp, title_key, TaskPool
 from modules import kodi_utils
 # logger = kodi_utils.logger
 
@@ -19,6 +19,8 @@ class EpisodeTools:
 
 	def next_episode_info(self):
 		try:
+                        if self.nextep_settings and self.nextep_settings.get('random_next_up'):
+                                return self.random_next_up_info(first_run=False)
 			play_type = self.nextep_settings['play_type']
 			season_data = self.meta_get('season_data')
 			watch_count = self.meta_get('watch_count')
@@ -89,6 +91,90 @@ class EpisodeTools:
 				url_params['play_type'] = 'random_continual'
 		except: url_params = 'error'
 		return self.add_playback_key(url_params)
+        def random_next_up_info(self, first_run=True):
+                try:
+                        from modules import settings
+
+                        current_date, current_time = get_datetime(), get_current_timestamp()
+                        watched_indicators_value = watched_indicators()
+                        nextep_content = settings.nextep_method()
+                        data = get_next_episodes(nextep_content)
+
+                        if settings.nextep_limit_history():
+                                data = data[:settings.nextep_limit()]
+
+                        hidden_list = get_hidden_progress_items(watched_indicators_value)
+                        if hidden_list:
+                                data = [i for i in data if not i['media_ids']['tmdb'] in hidden_list]
+
+                        random.shuffle(data)
+
+                        for ep_data in data:
+                                try:
+                                        media_ids = ep_data.get('media_ids')
+                                        if not media_ids: continue
+
+                                        meta = tvshow_meta('trakt_dict', media_ids, settings.tmdb_api_key(), settings.mpaa_region(), current_date, current_time)
+                                        if not meta: continue
+
+                                        watched_info = watched_info_episode(meta.get('tmdb_id'))
+                                        season_data = meta.get('season_data')
+                                        current_season, current_episode = int(ep_data.get('season')), int(ep_data.get('episode'))
+                                        season, episode = get_next(current_season, current_episode, watched_info, season_data, nextep_content)
+                                        if not season or not episode: continue
+
+                                        ep_meta = episodes_meta(season, meta)
+                                        if not ep_meta: continue
+
+                                        chosen_episode = next((i for i in ep_meta if i['episode'] == episode), None)
+                                        if not chosen_episode: continue
+
+                                        episode_date, premiered = adjust_premiered_date(chosen_episode.get('premiered'), date_offset())
+                                        if not episode_date or get_datetime() < episode_date: continue
+
+                                        title = meta.get('title')
+                                        display_name = '%s - %dx%.2d' % (title, int(season), int(episode))
+                                        playcount = get_watched_status_episode(watched_info, (season, episode))
+
+                                        nextep_settings = self.nextep_settings or {}
+                                        nextep_settings['random_next_up'] = True
+
+                                        url_params = {
+                                                'media_type': 'episode',
+                                                'tmdb_id': meta.get('tmdb_id'),
+                                                'tvshowtitle': display_name,
+                                                'season': season,
+                                                'episode': episode,
+                                                'playcount': playcount,
+                                                'autoplay': 'true',
+                                                'play_type': 'autoplay_nextep',
+                                                'random_next_up': 'true',
+                                                'nextep_settings': nextep_settings,
+                                                'watch_count': self.meta_get('watch_count', 1)
+                                        }
+
+                                        if not first_run:
+                                                url_params['background'] = 'true'
+                                        if title:
+                                                url_params['custom_title'] = title
+                                        if meta.get('year'):
+                                                url_params['custom_year'] = meta.get('year')
+
+                                        return self.add_playback_key(url_params)
+                                except:
+                                        pass
+
+                        return 'no_next_episode'
+                except:
+                        return 'error'
+
+        def play_random_next_up(self):
+                url_params = self.random_next_up_info(first_run=True)
+                if url_params == 'error': return kodi_utils.notification('Random Next Up Error', 3000)
+                elif url_params == 'no_next_episode': return kodi_utils.notification('No Random Next Up Episode Found', 3000)
+                return Sources().playback_prep(url_params)
+
+
 
 	def play_random(self):
 		url_params = self.get_random_episode()

@@ -205,6 +205,8 @@ class FenSkeletonPlayer(xbmc.Player):
 		try:
 			play_type = 'autoplay_nextep' if self.autoplay_nextep else 'autoscrape_nextep'
 			nextep_settings = st.auto_nextep_settings(play_type)
+			if self.meta_get('random_next_up') == 'true':
+			        nextep_settings['random_next_up'] = True
 			watching_check = nextep_settings['watching_check']
 			still_watching_check = 15 if self.meta_get('watch_count') == watching_check else 0
 			final_chapter = self.final_chapter(90) if nextep_settings['use_chapters'] else None

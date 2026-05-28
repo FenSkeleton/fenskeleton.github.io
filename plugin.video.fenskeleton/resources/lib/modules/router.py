@@ -130,8 +130,8 @@ def routing(sys):
 			from indexers.episodes import build_single_episode
 			return build_single_episode('episode.next', params)
 		elif mode == 'build_random_next_episode':
-			from indexers.episodes import build_single_episode
-			return build_single_episode('episode.next_random', params)
+                        from modules.episode_tools import EpisodeTools
+                        return EpisodeTools({}).play_random_next_up()
 		elif mode == 'build_my_calendar':
 			from indexers.episodes import build_single_episode
 			return build_single_episode('episode.trakt', params)

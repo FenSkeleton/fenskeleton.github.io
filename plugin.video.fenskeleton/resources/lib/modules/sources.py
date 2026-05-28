@@ -69,6 +69,8 @@ class Sources():
 		if 'autoplay' in self.params: self.autoplay = params_get('autoplay', 'false') == 'true'
 		else: self.autoplay = settings.auto_play(self.media_type)
 		self.get_meta()
+		if params_get('random_next_up', 'false') == 'true':
+		        self.meta['random_next_up'] = 'true'
 		self.determine_scrapers_status()
 		self.sleep_time, self.provider_sort_ranks, self.scraper_settings = 100, settings.provider_sort_ranks(), settings.scraping_settings()
 		self.include_prerelease_results = settings.include_prerelease_results()
