@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<addon id="skin.fenmage" version="0.0.3" name="Fen-Mage"
+<addon id="skin.fenmage" version="0.0.4" name="Fen-Mage"
 	provider-name="FenSkeleton">
 	<requires>
 		<import addon="xbmc.gui" version="5.17.0" />
@@ -35,4 +35,5 @@
 		<description lang="en_US">Fen-Mage is the best way to view FenSkeleton. Built on Ivar Brandt's FenMage (Estuary MOD).[CR][CR]See Skin settings Â» Extra info to set up the skin.[CR][CR]See [B]CHANGELOG[/B] located in Skin settings Â» Extra info for latest changes.</description>
 	</extension>
 </addon>
+
 
