@@ -132,6 +132,9 @@ def routing(sys):
                 elif mode == 'build_random_next_episode':
                         from modules.episode_tools import EpisodeTools
                         return EpisodeTools({}).play_random_next_up()
+                elif mode == 'navigator.random_next_up_widget':
+                        from indexers.navigator import Navigator
+                        return Navigator(params).random_next_up_widget()
                 elif mode == 'build_my_calendar':
                         from indexers.episodes import build_single_episode
                         return build_single_episode('episode.trakt', params)
