@@ -332,6 +332,9 @@ def routing(sys):
         elif mode == 'favorite_people':
                 from indexers.people import favorite_people
                 return favorite_people()
+        elif mode == 'favorites_manager_choice':
+                from indexers.dialogs import favorites_manager_choice
+                return favorites_manager_choice(params)
         elif mode == 'manual_add_magnet_to_cloud':
                 from modules.debrid import manual_add_magnet_to_cloud
                 return manual_add_magnet_to_cloud(params)
