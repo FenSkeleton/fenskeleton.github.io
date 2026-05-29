@@ -5,7 +5,7 @@
 	<onload condition="!Skin.HasSetting(firsttimerun) + String.IsEmpty(Window(Home).Property(fenmage.setup_shown))">SetProperty(fenmage.setup_shown,true)</onload>
 	<onload condition="!Skin.HasSetting(firsttimerun) + String.IsEqual(Window(Home).Property(fenmage.setup_shown),true)">ActivateWindow(1112)</onload>
   <onload condition="String.IsEmpty(Window(Home).Property(fenmage.starting_widgets))">RunScript(special://home/addons/plugin.video.fenskeleton/resources/lib/fenskeleton.py,mode=starting_widgets)</onload>
-	<onload condition="String.IsEmpty(Skin.String(current_search_provider))">Skin.SetString(current_search_provider,0)</onload>
+	<onload condition="String.IsEmpty(Skin.String(current_search_provider))">Skin.SetString(current_search_provider,1)</onload>
 	<onload condition="String.IsEmpty(Skin.String(DefaultBackgroundBrightness))">Skin.SetString(DefaultBackgroundBrightness,Medium)</onload>
 	<onload condition="String.IsEmpty(Skin.String(DefaultFanartBrightness))">Skin.SetString(DefaultFanartBrightness,Medium)</onload>
 	<controls>
