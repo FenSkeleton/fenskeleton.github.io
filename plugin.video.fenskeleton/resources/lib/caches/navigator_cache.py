@@ -67,8 +67,7 @@ class NavigatorCache:
 	{'name': 'In Progress', 'mode': 'build_tvshow_list', 'action': 'in_progress_tvshows', 'iconImage': 'in_progress_tvshow'},
 	{'name': 'Recently Watched Episodes', 'mode': 'build_recently_watched_episode', 'iconImage': 'watched_recent'},
 	{'name': 'In Progress Episodes', 'mode': 'build_in_progress_episode', 'iconImage': 'player'},
-	{'name': 'Next Episodes', 'mode': 'build_next_episode', 'iconImage': 'next_episodes'},
-	{'name': 'Play Random Next Up', 'mode': 'navigator.random_next_up_widget', 'iconImage': 'random'}
+	{'name': 'Next Episodes', 'mode': 'build_next_episode', 'iconImage': 'next_episodes'}
 				]
 	anime_list = [
 	{'name': 'Anime Trending', 'mode': 'build_tvshow_list', 'action': 'trakt_anime_trending', 'random_support': 'true', 'iconImage': 'trending'},
