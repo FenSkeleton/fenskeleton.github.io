@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons>
 
-<addon id="plugin.video.fenskeleton" name="FenSkeleton" provider-name="FenSkeleton" version="0.0.9">
+<addon id="plugin.video.fenskeleton" name="FenSkeleton" provider-name="FenSkeleton" version="0.0.10">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.pil" version="1.1.7"/>
@@ -29,6 +29,7 @@ v0.0.2 - v1 base checkpoint: TorBox device-code auth retained; Random Next Episo
 v0.0.1 - Initial public release.</news>
     </extension>
 </addon>
+
 
 
 
