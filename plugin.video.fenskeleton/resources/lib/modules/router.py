@@ -59,6 +59,19 @@ def routing(sys):
         if mode in ('remake_all_cpaths', 'remake_menus_widgets', 'remake_widgets', 'remake_menus'):
                 from modules.cpath_maker import remake_all_cpaths
                 return remake_all_cpaths()
+        # FenMage search/helper replacements. These are called with RunScript,
+        # so there is no numeric Kodi directory handle.
+        if mode in ('open_search_window', 'search_input', 're_search', 'remove_all_spaths'):
+                from modules.search_utils import SPaths
+                spaths = SPaths()
+                if mode == 'open_search_window':
+                        return spaths.open_search_window()
+                elif mode == 'search_input':
+                        return spaths.search_input(params.get('search_term'))
+                elif mode == 're_search':
+                        return spaths.re_search()
+                return spaths.remove_all_spaths()
+
         # FenSkeleton: play mode for TMDbHelper
         if mode == 'play':
                 from urllib.parse import unquote_plus
@@ -132,9 +145,6 @@ def routing(sys):
                 elif mode == 'build_random_next_episode':
                         from modules.episode_tools import EpisodeTools
                         return EpisodeTools({}).play_random_next_up()
-                elif mode == 'navigator.random_next_up_widget':
-                        from indexers.navigator import Navigator
-                        return Navigator(params).random_next_up_widget()
                 elif mode == 'build_my_calendar':
                         from indexers.episodes import build_single_episode
                         return build_single_episode('episode.trakt', params)

@@ -154,9 +154,9 @@ _DEFAULT_WIDGETS = [
 			{'ctype': 'WidgetListPoster',    'path': _plugin('build_tvshow_list', action='tmdb_tv_popular'),           'header': 'Popular TV Shows',    'lid': '20001'},
 			{'ctype': 'WidgetListPoster',    'path': _plugin('build_tvshow_list', action='tmdb_tv_on_the_air'),        'header': 'On The Air',          'lid': '20002'},
 			{'ctype': 'WidgetListLandscape', 'path': _plugin('build_in_progress_episode'),                             'header': 'Continue Watching',   'lid': '20003'},
-			{'ctype': 'WidgetListLandscape', 'path': _plugin('build_random_next_episode'),                             'header': 'Random Next Episodes','lid': '20005'},
+			{'ctype': 'WidgetListLandscape', 'path': _plugin('navigator.random_next_up_widget'),                             'header': 'Random Next Episodes','lid': '20005'},
 			{'ctype': 'WidgetListLandscape', 'path': _plugin('build_next_episode'),                                    'header': 'Next Episodes',       'lid': '20004'},
-			{'ctype': 'WidgetListPoster',    'path': _plugin('build_tvshow_list', action='tmdb_tv_airing_today'),     'header': 'Airing Today',        'lid': '20005'},
+			{'ctype': 'WidgetListPoster',    'path': _plugin('build_tvshow_list', action='tmdb_tv_airing_today'),     'header': 'Airing Today',        'lid': '20006'},
 			# local library tiles
 			{'ctype': 'WidgetListCategory',
 			 'path': 'videodb://tvshows/genres/',
@@ -184,7 +184,7 @@ _DEFAULT_WIDGETS = [
 			{'ctype': 'WidgetListPoster',    'path': _plugin('build_movie_list',  action='in_progress_movies'),       'header': 'In Progress Movies',  'lid': '40002'},
 			{'ctype': 'WidgetListLandscape', 'path': _plugin('build_movie_list',  action='recent_watched_movies'),    'header': 'Recently Watched',    'lid': '40003'},
 			{'ctype': 'WidgetListLandscape', 'path': _plugin('build_next_episode'),                                   'header': 'Next Episodes',       'lid': '40004'},
-			{'ctype': 'WidgetListLandscape', 'path': _plugin('build_random_next_episode'),                            'header': 'Random Next Episodes','lid': '40005'},
+			{'ctype': 'WidgetListLandscape', 'path': _plugin('navigator.random_next_up_widget'),                            'header': 'Random Next Episodes','lid': '40005'},
 		],
 	},
 	{

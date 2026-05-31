@@ -2,10 +2,10 @@
 <includes>
     <include name="Custom3MainMenu">
         <item>
-            <label>Search</label>
-            <onclick>ActivateWindow(Videos,plugin://plugin.video.fenskeleton/?mode=navigator.search,return)</onclick>
+            <label>Favorites</label>
+            <onclick>ActivateWindow(Videos,plugin://plugin.video.fenskeleton/?name=Favorites&amp;mode=navigator.favorites&amp;iconImage=favorites,return)</onclick>
             <property name="menu_id">$NUMBER[25000]</property>
-            <thumb>icons/search.png</thumb>
+            <thumb>icons/sidemenu/tv.png</thumb>
             <property name="id">custom3</property>
             <visible>!Skin.HasSetting(HomeMenuNoCustom3Button)</visible>
         </item>

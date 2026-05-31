@@ -1,3 +1,6 @@
+0.0.7
+- Wire the empty-history New search button to FenSkeleton search input.
+
 FenMage v0.0.1
 - Initial public release bundled for FenSkeleton.
 - Widget and main menu management support.

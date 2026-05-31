@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
     <include name="Custom2MainMenu">
-        <item>
-            <label>My Lists</label>
-            <onclick>ActivateWindow(Videos,plugin://plugin.video.fenskeleton/?mode=navigator.my_content,return)</onclick>
-            <property name="menu_id">$NUMBER[24000]</property>
-            <thumb>icons/sidemenu/manage.png</thumb>
-            <property name="id">custom2</property>
-            <visible>!Skin.HasSetting(HomeMenuNoCustom2Button)</visible>
-        </item>
     </include>
 </includes>

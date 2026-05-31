@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
     <include name="MovieWidgets">
-        <definition/>
+        <include content="WidgetListPoster">
+            <param name="content_path" value="plugin://plugin.video.fenskeleton/?name=Trending&amp;mode=build_movie_list&amp;action=trakt_movies_trending&amp;random_support=true&amp;iconImage=trending"/>
+            <param name="widget_header" value="Trending"/>
+            <param name="widget_target" value="videos"/>
+            <param name="list_id" value="19011"/>
+        </include>
     </include>
 </includes>

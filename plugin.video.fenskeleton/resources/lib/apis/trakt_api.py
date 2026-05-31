@@ -131,7 +131,9 @@ def trakt_get_device_token(device_codes):
 				status_code = response.status_code
 				try: response_text = response.text[:500]
 				except Exception: response_text = ''
-				try: logger('FenSkeleton Trakt token poll %s' % poll_no, 'status=%s body=%s' % (status_code, response_text))
+				# Never write access or refresh tokens into kodi.log.
+				safe_body = '[redacted token response]' if status_code == 200 else response_text
+				try: logger('FenSkeleton Trakt token poll %s' % poll_no, 'status=%s body=%s' % (status_code, safe_body))
 				except Exception: pass
 				if status_code == 200:
 					result = response.json()

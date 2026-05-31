@@ -34,7 +34,8 @@ def get_key_id(params):
 	if search_type == 'people': return person_search(key_id)
 	if search_type == 'easynews_image': return search_easynews_image(key_id)
 	url_params.update({'query': key_id, 'key_id': key_id, 'name': 'Search Results for %s' % key_id})
-	return execute_builtin('ActivateWindow(Videos,%s,return)' if external() else 'Container.Update(%s)' % build_url(url_params))
+	command = ('ActivateWindow(Videos,%s,return)' if external() else 'Container.Update(%s)') % build_url(url_params)
+	return execute_builtin(command)
 
 def add_to_search(search_name, search_list):
 	try:

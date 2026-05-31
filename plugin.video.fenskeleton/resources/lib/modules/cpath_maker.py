@@ -181,7 +181,7 @@ class CPaths:
     def path_browser(self, label="", file=default_path, thumbnail=""):
         show_busy_dialog()
         label = self.clean_header(label)
-        results = files_get_directory(file)
+        results = files_get_directory(file) or []
         hide_busy_dialog()
         list_items = []
         if file != default_path:

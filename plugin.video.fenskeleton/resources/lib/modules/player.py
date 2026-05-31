@@ -216,6 +216,8 @@ class FenSkeletonPlayer(xbmc.Player):
                         default_action = nextep_settings['default_action']
                         self.start_prep = nextep_settings['scraper_time'] + window_time
                         self.nextep_settings = {'use_window': use_window, 'window_time': window_time, 'default_action': default_action, 'play_type': play_type, 'watching_check': watching_check}
+                        if nextep_settings.get('random_next_up'):
+                                self.nextep_settings['random_next_up'] = True
                 except: pass
 
         def final_chapter(self, threshhold):

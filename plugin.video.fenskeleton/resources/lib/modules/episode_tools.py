@@ -107,6 +107,21 @@ class EpisodeTools:
                         if hidden_list:
                                 data = [i for i in data if not i['media_ids']['tmdb'] in hidden_list]
 
+                        # A Random Next Up session should move between different shows,
+                        # not fall back into a normal binge of the first selected title.
+                        # Keep a lightweight session history and exhaust the available
+                        # Next Up shows before allowing a repeat.
+                        history_key = 'fenskeleton.random_next_up_history'
+                        if first_run:
+                                show_history = []
+                        else:
+                                try: show_history = json.loads(kodi_utils.get_property(history_key) or '[]')
+                                except: show_history = []
+                        unseen_data = [i for i in data if str(i.get('media_ids', {}).get('tmdb')) not in show_history]
+                        if unseen_data:
+                                data = unseen_data
+                        else:
+                                show_history = []
                         random.shuffle(data)
 
                         for ep_data in data:
@@ -160,6 +175,10 @@ class EpisodeTools:
                                         if meta.get('year'):
                                                 url_params['custom_year'] = meta.get('year')
 
+                                        chosen_tmdb = str(media_ids.get('tmdb'))
+                                        if chosen_tmdb and chosen_tmdb not in show_history:
+                                                show_history.append(chosen_tmdb)
+                                        kodi_utils.set_property(history_key, json.dumps(show_history))
                                         return self.add_playback_key(url_params)
                                 except:
                                         pass

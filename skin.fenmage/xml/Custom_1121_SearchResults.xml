@@ -135,6 +135,7 @@
 					<param name="left">50</param>
 					<param name="text_label" value="Your search history is currently empty. Would you like to perform a new search or return to the home screen?" />
 					<param name="button_label" value="New search" />
+					<param name="button_onclick" value="RunScript(special://home/addons/plugin.video.fenskeleton/resources/lib/fenskeleton.py,mode=search_input)" />
 					<param name="button3_onclick" value="ActivateWindow(home)"/>
 					<param name="button_id" value="27400"/>
 				</include>
@@ -229,6 +230,8 @@
 						</include>
 						<include content="IconButton">
 							<param name="control_id" value="803" />
+
+							<param name="onclick" value="RunScript(special://home/addons/plugin.video.fenskeleton/resources/lib/fenskeleton.py,mode=search_input)" />
 							<param name="icon" value="icons/search.png" />
 							<param name="label" value="$LOCALIZE[137]" />
 						</include>

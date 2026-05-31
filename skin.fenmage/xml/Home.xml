@@ -1045,11 +1045,15 @@
 						</include>
 						<include content="IconButton" condition="!Skin.HasSetting(NoSearchResultsWindow) + Skin.HasSetting(DefaultSearchWindowBehavior)">
 							<param name="control_id" value="805" />
+
+							<param name="onclick" value="RunScript(special://home/addons/plugin.video.fenskeleton/resources/lib/fenskeleton.py,mode=search_input)" />
 							<param name="icon" value="icons/search.png" />
 							<param name="label" value="$LOCALIZE[137]" />
 						</include>
 						<include content="IconButton" condition="!Skin.HasSetting(NoSearchResultsWindow) + !Skin.HasSetting(DefaultSearchWindowBehavior)">
 							<param name="control_id" value="806" />
+
+							<param name="onclick" value="RunScript(special://home/addons/plugin.video.fenskeleton/resources/lib/fenskeleton.py,mode=open_search_window)" />
 							<param name="icon" value="icons/search.png" />
 							<param name="label" value="$LOCALIZE[137]" />
 						</include>

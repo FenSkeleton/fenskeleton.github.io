@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
     <include name="Custom3Widgets">
-        <definition/>
+        <include content="WidgetListPoster">
+            <param name="content_path" value="plugin://plugin.video.fenskeleton/?mode=build_movie_list&amp;action=favorites_movies&amp;name=Movies&amp;iconImage=C%3A%5CUsers%5CMark%5CAppData%5CRoaming%5CKodi%5Caddons%5Cplugin.video.fenskeleton%5Cresources%5Cmedia%5Cicons%5Cmovies.png"/>
+            <param name="widget_header" value="Movies"/>
+            <param name="widget_target" value="videos"/>
+            <param name="list_id" value="25011"/>
+        </include>
+        <include content="WidgetListPoster">
+            <param name="content_path" value="plugin://plugin.video.fenskeleton/?mode=build_tvshow_list&amp;action=favorites_tvshows&amp;name=TV+Shows&amp;iconImage=C%3A%5CUsers%5CMark%5CAppData%5CRoaming%5CKodi%5Caddons%5Cplugin.video.fenskeleton%5Cresources%5Cmedia%5Cicons%5Ctv.png"/>
+            <param name="widget_header" value="TV Shows"/>
+            <param name="widget_target" value="videos"/>
+            <param name="list_id" value="25012"/>
+        </include>
+        <include content="WidgetListPoster">
+            <param name="content_path" value="plugin://plugin.video.fenskeleton/?mode=build_tvshow_list&amp;action=favorites_anime&amp;is_anime_list=true&amp;name=Anime&amp;iconImage=C%3A%5CUsers%5CMark%5CAppData%5CRoaming%5CKodi%5Caddons%5Cplugin.video.fenskeleton%5Cresources%5Cmedia%5Cicons%5Canime.png"/>
+            <param name="widget_header" value="Anime"/>
+            <param name="widget_target" value="videos"/>
+            <param name="list_id" value="25013"/>
+        </include>
     </include>
 </includes>

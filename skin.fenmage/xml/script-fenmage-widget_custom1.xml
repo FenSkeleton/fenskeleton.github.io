@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
     <include name="Custom1Widgets">
-        <definition/>
+        <include content="WidgetListPoster">
+            <param name="content_path" value="plugin://plugin.video.fenskeleton/?name=Next+Episodes&amp;mode=build_next_episode&amp;iconImage=next_episodes"/>
+            <param name="widget_header" value="Next Episodes"/>
+            <param name="widget_target" value="videos"/>
+            <param name="list_id" value="23011"/>
+        </include>
     </include>
 </includes>
