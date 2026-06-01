@@ -1,9 +1,161 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FenSkeleton Kodi Repository</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #07111f;
+      color: #eaf4ff;
+      line-height: 1.6;
+    }
+
+    .wrap {
+      max-width: 850px;
+      margin: 0 auto;
+      padding: 48px 22px;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 38px 20px;
+      border: 1px solid #1d4f73;
+      border-radius: 18px;
+      background: #0b1a2d;
+      box-shadow: 0 0 30px rgba(0, 153, 255, 0.12);
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 2.6rem;
+      color: #7fd7ff;
+    }
+
+    h2 {
+      margin-top: 34px;
+      color: #8fdcff;
+    }
+
+    .tagline {
+      font-size: 1.1rem;
+      color: #c8e9ff;
+    }
+
+    .card {
+      margin-top: 22px;
+      padding: 22px;
+      border: 1px solid #173f5e;
+      border-radius: 14px;
+      background: #0d2035;
+    }
+
+    code {
+      display: block;
+      margin: 12px 0;
+      padding: 12px;
+      overflow-wrap: anywhere;
+      border-radius: 8px;
+      background: #06111f;
+      color: #92e6ff;
+    }
+
+    ol {
+      padding-left: 22px;
+    }
+
+    a {
+      color: #76d9ff;
+    }
+
+    .download-button {
+      display: inline-block;
+      padding: 12px 18px;
+      border-radius: 9px;
+      background: #1677a8;
+      color: #ffffff;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .download-button:hover {
+      background: #2299d0;
+    }
+
+    .small {
+      color: #a9c7da;
+      font-size: 0.95rem;
+    }
+
+    footer {
+      margin-top: 36px;
+      text-align: center;
+      color: #7997aa;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
 <body>
-<h1>FenSkeleton Kodi Repository</h1>
-<a href="zips/">zips</a><br>
-<a href="addons.xml">addons.xml</a>
+  <main class="wrap">
+    <section class="hero">
+      <h1>FenSkeleton</h1>
+      <p class="tagline">A lightweight Kodi video add-on with the Fen-Mage skin.</p>
+      <p>Built to stay lean, fast, and easy to install.</p>
+    </section>
+
+    <section class="card">
+      <h2>Install Source</h2>
+      <p>Add this source in Kodi:</p>
+      <code>https://fenskeleton.github.io/</code>
+      <p>Or download the repository installer directly:</p>
+      <p>
+        <a class="download-button"
+           href="zips/repository.fenskeleton/repository.fenskeleton-1.0.2.zip">
+          Download FenSkeleton Repository
+        </a>
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Installation Steps</h2>
+      <ol>
+        <li>Open Kodi Settings.</li>
+        <li>Go to File Manager and choose Add Source.</li>
+        <li>Enter <strong>https://fenskeleton.github.io/</strong> as the source.</li>
+        <li>Return to Add-ons and choose Install from zip file.</li>
+        <li>Open the FenSkeleton source, then browse to <strong>zips ? repository.fenskeleton</strong>.</li>
+        <li>Install the FenSkeleton Repository zip.</li>
+        <li>Choose Install from repository.</li>
+        <li>Install FenSkeleton and the Fen-Mage skin.</li>
+      </ol>
+    </section>
+
+    <section class="card">
+      <h2>Important Note</h2>
+      <p>
+        FenSkeleton does not bundle external scraper packages.
+        Configure your preferred compatible scraper package separately.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Repository Files</h2>
+      <p class="small">
+        These links are mainly for Kodi and troubleshooting:
+      </p>
+      <p>
+        <a href="zips/">Browse repository packages</a><br>
+        <a href="addons.xml">View addons.xml</a>
+      </p>
+    </section>
+
+    <footer>
+      FenSkeleton Kodi Repository
+    </footer>
+  </main>
 </body>
 </html>
 
-<!-- force pages rebuild May26 -->
+
