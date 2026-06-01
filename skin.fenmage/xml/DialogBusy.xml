@@ -20,14 +20,17 @@
 				<centertop>50%</centertop>
 				<width>80</width>
 				<height>80</height>
-				<control type="image">
-					<centerleft>50%</centerleft>
-					<centertop>50%</centertop>
-					<width>120</width>
-					<height>120</height>
-					<aspectratio>keep</aspectratio>
-					<texture loop="yes">fenskeleton_common/spinner_frames/</texture>
-				</control>
+				<control type="multiimage">
+                                        <centerleft>50%</centerleft>
+                                        <centertop>50%</centertop>
+                                        <width>120</width>
+                                        <height>120</height>
+                                        <aspectratio>keep</aspectratio>
+                                        <imagepath>fenskeleton_common/spinner_frames/</imagepath>
+                                        <timeperimage>55</timeperimage>
+                                        <loop>yes</loop>
+                                        <randomize>false</randomize>
+                                </control>
 				<control type="image">
 					<centerleft>50%</centerleft>
 					<centertop>50%</centertop>
