@@ -569,7 +569,9 @@ class Navigator:
                 self.end_directory()
 
         def random_next_up_widget(self):
-                self.add({'mode': 'build_random_next_episode', 'isFolder': 'false'}, 'Play Random Next Up', 'random')
+                # Browsing this widget must be harmless. Playback only starts
+                # after the user explicitly selects the tile.
+                self.add({'mode': 'play_random_next_up', 'isFolder': 'false'}, 'Play Random Next Up', 'random')
                 self.end_directory()
 
         def add(self, url_params, list_name, iconImage='folder', original_image=False, cm_items=[]):

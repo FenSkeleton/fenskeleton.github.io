@@ -120,6 +120,10 @@ def routing(sys):
                         return exec('trakt_lists.%s(params)' % mode.split('.')[2])
                 from apis import trakt_api
                 return exec('trakt_api.%s(params)' % mode.split('.')[1])
+        elif mode == 'play_random_next_up':
+                # Explicit click-only action used by the safe Random Next Up tile.
+                from modules.episode_tools import EpisodeTools
+                return EpisodeTools({}).play_random_next_up()
         elif 'build' in mode:
                 if mode == 'build_movie_list':
                         from indexers.movies import Movies
@@ -143,8 +147,12 @@ def routing(sys):
                         from indexers.episodes import build_single_episode
                         return build_single_episode('episode.next', params)
                 elif mode == 'build_random_next_episode':
-                        from modules.episode_tools import EpisodeTools
-                        return EpisodeTools({}).play_random_next_up()
+                        # Directory-safe compatibility route.
+                        # Older Android widget paths may still call this while
+                        # Kodi is browsing or refreshing a widget. Never start
+                        # playback from a directory request.
+                        from indexers.navigator import Navigator
+                        return Navigator(params).random_next_up_widget()
                 elif mode == 'build_my_calendar':
                         from indexers.episodes import build_single_episode
                         return build_single_episode('episode.trakt', params)
