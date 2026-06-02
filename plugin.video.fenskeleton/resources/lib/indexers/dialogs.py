@@ -826,7 +826,7 @@ def extras_buttons_choice(params):
 def extras_ratings_choice(params={}):
 	choices = [('Metacritic', 'Meta', 'metacritic.png'), ('Tomato Rating Critic', 'Tom/Critic', 'rtcertified.png'),
 				('Tomato Rating User', 'Tom/User', 'popcorn.png'), ('IMDb', 'IMDb', 'imdb.png'), ('TMDb', 'TMDb', 'tmdb.png')]
-	list_items = [{'line1': i[0], 'icon': 'fenlight_flags/ratings/%s' % i[2]} for i in choices]
+	list_items = [{'line1': i[0], 'icon': 'fenskeleton_flags/ratings/%s' % i[2]} for i in choices]
 	current_settings = settings.extras_enabled_ratings()
 	try: preselect = [choices.index(i) for i in choices if i[1] in current_settings]
 	except: preselect = []

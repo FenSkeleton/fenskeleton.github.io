@@ -149,7 +149,7 @@ class Extras(BaseDialog):
 		for item in final_ratings:
 			self.setProperty('%s_rating' % item['prop'], 'true')
 			self.set_label(win_prop + item['_id'], item['rating'])
-			self.set_image(win_prop + 100 + item['_id'], 'fenlight_flags/ratings/%s' % item['icon'])
+			self.set_image(win_prop + 100 + item['_id'], 'fenskeleton_flags/ratings/%s' % item['icon'])
 
 	def make_plot_and_tagline(self):
 		self.plot = self.meta_get('tvshow_plot', '') or self.meta_get('plot', '') or ''
@@ -893,7 +893,7 @@ class Extras(BaseDialog):
 			self.set_image(203, '')
 		else:
 			data = rating_data or self.single_rating_data
-			rating, image = data['rating'], 'fenlight_flags/ratings/%s' % data['icon']
+			rating, image = data['rating'], 'fenskeleton_flags/ratings/%s' % data['icon']
 			if rating: self.set_image(203, image)
 		self.set_label(2001, '[B]  •  [/B]'.join([i for i in (rating, self.year, self.mpaa, self.get_duration(), self.stinger_dialog, self.status_infoline_value) if i]))
 

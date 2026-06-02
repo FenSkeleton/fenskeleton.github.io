@@ -154,10 +154,10 @@ class StingersNotification(BaseDialog):
 		for k, v in self.stinger_dict.items():
 			if k in self.stingers:
 				self.setProperty(v['property'], 'green')
-				self.set_image(v['id'], 'fenlight_common/overlay_selected.png')
+				self.set_image(v['id'], 'fenskeleton_common/overlay_selected.png')
 			else:
 				self.setProperty(v['property'], 'red')
-				self.set_image(v['id'], 'fenlight_common/cross.png')
+				self.set_image(v['id'], 'fenskeleton_common/cross.png')
 
 	def set_properties(self):
 		self.setProperty('mode', 'stinger')

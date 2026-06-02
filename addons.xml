@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons>
-<addon id="plugin.video.fenskeleton" name="FenSkeleton" provider-name="FenSkeleton" version="0.0.13">
+<addon id="plugin.video.fenskeleton" name="FenSkeleton" provider-name="FenSkeleton" version="0.0.14">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.pil" version="1.1.7"/>
@@ -13,7 +13,7 @@
     <extension point="xbmc.python.module" library="resources/lib/"/>
     <extension point="xbmc.addon.metadata">
         <reuselanguageinvoker>false</reuselanguageinvoker>
-        <summary lang="en">FenSkeleton Ã¢â‚¬â€œ lean multi-debrid resolver for TMDbHelper</summary>
+        <summary lang="en">FenSkeleton – lean multi-debrid resolver for TMDbHelper</summary>
         <description lang="en">Fast, minimal debrid resolver built on the stable v0.1.10 engine. Pairs with TMDbHelper for browsing. Supports Real-Debrid, AllDebrid, Premiumize and TorBox. External scrapers such as CocoScrapers are supported. Works with FenMage skin.</description>
         <platform>all</platform>
         <email>fenskeleton@gmail.com</email>
@@ -65,9 +65,9 @@ v0.0.1 - Initial public release.</news>
 		<summary lang="en_GB">Thanks to Ivar - Estuary Mod!</summary>
 		<summary lang="en_NZ">Thanks to Ivar - Estuary Mod!</summary>
 		<summary lang="en_US">Thanks to Ivar - Estuary Mod!</summary>
-		<description lang="en_GB">Fen-Mage is the best way to view FenSkeleton. Built on Ivar Brandt's FenMage (Estuary MOD).[CR][CR]See Skin settings Ãƒâ€šÃ‚Â» Extra info to set up the skin.[CR][CR]See [B]CHANGELOG[/B] located in Skin settings Ãƒâ€šÃ‚Â» Extra info for latest changes.</description>
-		<description lang="en_NZ">Fen-Mage is the best way to view FenSkeleton. Built on Ivar Brandt's FenMage (Estuary MOD).[CR][CR]See Skin settings Ãƒâ€šÃ‚Â» Extra info to set up the skin.[CR][CR]See [B]CHANGELOG[/B] located in Skin settings Ãƒâ€šÃ‚Â» Extra info for latest changes.</description>
-		<description lang="en_US">Fen-Mage is the best way to view FenSkeleton. Built on Ivar Brandt's FenMage (Estuary MOD).[CR][CR]See Skin settings Ãƒâ€šÃ‚Â» Extra info to set up the skin.[CR][CR]See [B]CHANGELOG[/B] located in Skin settings Ãƒâ€šÃ‚Â» Extra info for latest changes.</description>
+		<description lang="en_GB">Fen-Mage is the best way to view FenSkeleton. Built on Ivar Brandt's FenMage (Estuary MOD).[CR][CR]See Skin settings » Extra info to set up the skin.[CR][CR]See [B]CHANGELOG[/B] located in Skin settings » Extra info for latest changes.</description>
+		<description lang="en_NZ">Fen-Mage is the best way to view FenSkeleton. Built on Ivar Brandt's FenMage (Estuary MOD).[CR][CR]See Skin settings » Extra info to set up the skin.[CR][CR]See [B]CHANGELOG[/B] located in Skin settings » Extra info for latest changes.</description>
+		<description lang="en_US">Fen-Mage is the best way to view FenSkeleton. Built on Ivar Brandt's FenMage (Estuary MOD).[CR][CR]See Skin settings » Extra info to set up the skin.[CR][CR]See [B]CHANGELOG[/B] located in Skin settings » Extra info for latest changes.</description>
 	</extension>
 </addon>
 

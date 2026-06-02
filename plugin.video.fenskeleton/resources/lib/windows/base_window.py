@@ -167,7 +167,7 @@ class BaseDialog(xbmcgui.WindowXMLDialog):
 
 	def execute_code(self, command, block=False):
 		return kodi_utils.execute_builtin(command, block)
-	
+
 	def get_position(self, window_id):
 		return self.get_control(window_id).getSelectedPosition()
 
@@ -208,7 +208,7 @@ class BaseDialog(xbmcgui.WindowXMLDialog):
 
 	def get_visibility(self, command):
 		return kodi_utils.get_visibility(command)
-	
+
 	def open_window(self, import_info, skin_xml, **kwargs):
 		return open_window(import_info, skin_xml, **kwargs)
 
@@ -387,7 +387,7 @@ class ExtrasUtils:
 								'highlight_label': self.media_highlight.format(label='More from Networks')},
 								'template': self.thumb_media_template()},
 		2066: {'insert_values': {}, 'template': self.collection_template()}
-						
+
 						}
 
 	def run(self):
@@ -456,7 +456,7 @@ class ExtrasUtils:
 				                    <height max="344">auto</height>
 				                    <width max="220">auto</width>
 				                    <aspectratio>keep</aspectratio>
-				                    <texture diffuse="fenlight_diffuse/poster-50.png" background="true">$INFO[ListItem.Property(thumbnail)]</texture>
+				                    <texture diffuse="fenskeleton_diffuse/poster-50.png" background="true">$INFO[ListItem.Property(thumbnail)]</texture>
 				                </control>
 				            </itemlayout>
 				            <focusedlayout height="360" width="236">
@@ -470,7 +470,7 @@ class ExtrasUtils:
 				                    <top>5</top>
 				                    <height>350</height>
 				                    <width>236</width>
-				                    <texture colordiffuse="FFCCCCCC">fenlight_diffuse/poster-50.png</texture>
+				                    <texture colordiffuse="FFCCCCCC">fenskeleton_diffuse/poster-50.png</texture>
 				                    <visible>Control.HasFocus({container_no}) | Control.HasFocus({scrollbar_no})</visible>
 				                </control>
 				                <control type="image">
@@ -479,7 +479,7 @@ class ExtrasUtils:
 				                    <height max="344">auto</height>
 				                    <width max="220">auto</width>
 				                    <aspectratio>keep</aspectratio>
-				                    <texture diffuse="fenlight_diffuse/poster-50.png" background="true">$INFO[ListItem.Property(thumbnail)]</texture>
+				                    <texture diffuse="fenskeleton_diffuse/poster-50.png" background="true">$INFO[ListItem.Property(thumbnail)]</texture>
 				                </control>
 				            </focusedlayout>
 				        </control>
@@ -490,9 +490,9 @@ class ExtrasUtils:
 				            <height>15</height>
 				            <onup>{container_no}</onup>
 				            <ondown>{n_container_no}</ondown>
-				            <texturesliderbackground colordiffuse="FF1F2020">fenlight_common/white.png</texturesliderbackground>
-				            <texturesliderbar colordiffuse="FF555556">fenlight_common/white.png</texturesliderbar>
-				            <texturesliderbarfocus colordiffuse="FFCCCCCC">fenlight_common/white.png</texturesliderbarfocus>
+				            <texturesliderbackground colordiffuse="FF1F2020">fenskeleton_common/white.png</texturesliderbackground>
+				            <texturesliderbar colordiffuse="FF555556">fenskeleton_common/white.png</texturesliderbar>
+				            <texturesliderbarfocus colordiffuse="FFCCCCCC">fenskeleton_common/white.png</texturesliderbarfocus>
 				            <showonepage>false</showonepage>
 				            <orientation>Horizontal</orientation>
 				            <visible>String.IsEqual(Window.Property(enable_scrollbars),true) + [Control.HasFocus({container_no}) | Control.HasFocus({scrollbar_no})]</visible>
@@ -502,7 +502,7 @@ class ExtrasUtils:
 				            <left>20</left>
 				            <width>25</width>
 				            <height>25</height>
-				            <texture colordiffuse="CCCCCCCC" background="true">fenlight_common/arrow_left.png</texture>
+				            <texture colordiffuse="CCCCCCCC" background="true">fenskeleton_common/arrow_left.png</texture>
 				            <visible>[Control.HasFocus({container_no}) | Control.HasFocus({scrollbar_no})] + Container({container_no}).HasPrevious</visible>
 				        </control>
 				        <control type="image">
@@ -510,7 +510,7 @@ class ExtrasUtils:
 				            <left>1135</left>
 				            <width>25</width>
 				            <height>25</height>
-				            <texture colordiffuse="CCCCCCCC" background="true" flipx="true">fenlight_common/arrow_left.png</texture>
+				            <texture colordiffuse="CCCCCCCC" background="true" flipx="true">fenskeleton_common/arrow_left.png</texture>
 				            <visible>[Control.HasFocus({container_no}) | Control.HasFocus({scrollbar_no})] + Container({container_no}).HasNext</visible>
 				        </control>
 				    </control>
@@ -545,7 +545,7 @@ class ExtrasUtils:
 				                <control type="image">
 				                    <height>360</height>
 				                    <width>580</width>
-				                    <texture colordiffuse="$INFO[Window(10000).Property(fenskeleton.window_theme.extras)]" border="30">fenlight_common/circle.png</texture>
+				                    <texture colordiffuse="$INFO[Window(10000).Property(fenskeleton.window_theme.extras)]" border="30">fenskeleton_common/circle.png</texture>
 				                </control>
 				                <control type="textbox">
 				                    <top>15</top>
@@ -564,7 +564,7 @@ class ExtrasUtils:
 				                <control type="image">
 				                    <height>360</height>
 				                    <width>580</width>
-				                    <texture colordiffuse="FFCCCCCC" border="30">fenlight_common/circle.png</texture>
+				                    <texture colordiffuse="FFCCCCCC" border="30">fenskeleton_common/circle.png</texture>
 				                </control>
 				                <control type="textbox">
 				                    <top>15</top>
@@ -586,9 +586,9 @@ class ExtrasUtils:
 				            <height>15</height>
 				            <onup>{container_no}</onup>
 				            <ondown>{n_container_no}</ondown>
-				            <texturesliderbackground colordiffuse="FF1F2020">fenlight_common/white.png</texturesliderbackground>
-				            <texturesliderbar colordiffuse="FF555556">fenlight_common/white.png</texturesliderbar>
-				            <texturesliderbarfocus colordiffuse="FFCCCCCC">fenlight_common/white.png</texturesliderbarfocus>
+				            <texturesliderbackground colordiffuse="FF1F2020">fenskeleton_common/white.png</texturesliderbackground>
+				            <texturesliderbar colordiffuse="FF555556">fenskeleton_common/white.png</texturesliderbar>
+				            <texturesliderbarfocus colordiffuse="FFCCCCCC">fenskeleton_common/white.png</texturesliderbarfocus>
 				            <showonepage>false</showonepage>
 				            <orientation>Horizontal</orientation>
 				            <visible>String.IsEqual(Window.Property(enable_scrollbars),true) + [Control.HasFocus({container_no}) | Control.HasFocus({scrollbar_no})]</visible>
@@ -598,7 +598,7 @@ class ExtrasUtils:
 				            <left>20</left>
 				            <width>25</width>
 				            <height>25</height>
-				            <texture colordiffuse="CCCCCCCC" background="true">fenlight_common/arrow_left.png</texture>
+				            <texture colordiffuse="CCCCCCCC" background="true">fenskeleton_common/arrow_left.png</texture>
 				            <visible>[Control.HasFocus({container_no}) | Control.HasFocus({scrollbar_no})] + Container({container_no}).HasPrevious</visible>
 				        </control>
 				        <control type="image">
@@ -606,7 +606,7 @@ class ExtrasUtils:
 				            <left>1125</left>
 				            <width>25</width>
 				            <height>25</height>
-				            <texture colordiffuse="CCCCCCCC" background="true" flipx="true">fenlight_common/arrow_left.png</texture>
+				            <texture colordiffuse="CCCCCCCC" background="true" flipx="true">fenskeleton_common/arrow_left.png</texture>
 				            <visible>[Control.HasFocus({container_no}) | Control.HasFocus({scrollbar_no})] + Container({container_no}).HasNext</visible>
 				        </control>
 				    </control>
@@ -634,8 +634,8 @@ class ExtrasUtils:
                             <height>390</height>
                             <onup>{p_container_no}</onup>
                             <ondown>{n_container_no}</ondown>
-                            <texturefocus colordiffuse="FFCCCCCC" border="30">fenlight_common/circle.png</texturefocus>
-                            <texturenofocus colordiffuse="$INFO[Window(10000).Property(fenskeleton.window_theme.extras)]" border="30">fenlight_common/circle.png</texturenofocus>
+                            <texturefocus colordiffuse="FFCCCCCC" border="30">fenskeleton_common/circle.png</texturefocus>
+                            <texturenofocus colordiffuse="$INFO[Window(10000).Property(fenskeleton.window_theme.extras)]" border="30">fenskeleton_common/circle.png</texturenofocus>
                         </control>
                         <control type="textbox">
                             <top>65</top>
@@ -677,7 +677,7 @@ class ExtrasUtils:
             <width>1920</width>
             <height>1080</height>
             <control type="image">
-                <texture colordiffuse="FF000000">fenlight_common/white.png</texture>
+                <texture colordiffuse="FF000000">fenskeleton_common/white.png</texture>
             </control>
             <control type="image" id="202">
                 <aspectratio>scale</aspectratio>
@@ -729,7 +729,7 @@ class ExtrasUtils:
                         <width>35</width>
                         <height>35</height>
                         <aspectratio>keep</aspectratio>
-                        <texture>fenlight_common/info.png</texture>
+                        <texture>fenskeleton_common/info.png</texture>
                         <visible>!String.IsEqual(ListItem.Property(info_alert),)</visible>
                     </control>
                     <control type="label">
@@ -751,7 +751,7 @@ class ExtrasUtils:
                     <width>650</width>
                     <height>1000</height>
                     <aspectratio>keep</aspectratio>
-                    <texture diffuse="fenlight_diffuse/poster-50.png" background="true" />
+                    <texture diffuse="fenskeleton_diffuse/poster-50.png" background="true" />
                 </control>
                 <control type="group">
                     <control type="image" id="201">
@@ -963,8 +963,8 @@ class ExtrasUtils:
                             <font>font13</font> <!-- Fenlight-Skeleton_30 -->
                             <textcolor>FFCCCCCC</textcolor>
                             <focusedcolor>FF1F2020</focusedcolor>
-                            <texturefocus colordiffuse="FFCCCCCC" border="30">fenlight_common/circle.png</texturefocus>
-                            <texturenofocus colordiffuse="$INFO[Window(10000).Property(fenskeleton.window_theme.extras)]" border="30">fenlight_common/circle.png</texturenofocus>
+                            <texturefocus colordiffuse="FFCCCCCC" border="30">fenskeleton_common/circle.png</texturefocus>
+                            <texturenofocus colordiffuse="$INFO[Window(10000).Property(fenskeleton.window_theme.extras)]" border="30">fenskeleton_common/circle.png</texturenofocus>
                             <align>center</align>
                             <aligny>center</aligny>
                         </control>
@@ -980,8 +980,8 @@ class ExtrasUtils:
                             <font>font13</font> <!-- Fenlight-Skeleton_30 -->
                             <textcolor>FFCCCCCC</textcolor>
                             <focusedcolor>FF1F2020</focusedcolor>
-                            <texturefocus colordiffuse="FFCCCCCC" border="30">fenlight_common/circle.png</texturefocus>
-                            <texturenofocus colordiffuse="$INFO[Window(10000).Property(fenskeleton.window_theme.extras)]" border="30">fenlight_common/circle.png</texturenofocus>  
+                            <texturefocus colordiffuse="FFCCCCCC" border="30">fenskeleton_common/circle.png</texturefocus>
+                            <texturenofocus colordiffuse="$INFO[Window(10000).Property(fenskeleton.window_theme.extras)]" border="30">fenskeleton_common/circle.png</texturenofocus>
                             <align>center</align>
                             <aligny>center</aligny>
                         </control>
@@ -997,8 +997,8 @@ class ExtrasUtils:
                             <font>font13</font> <!-- Fenlight-Skeleton_30 -->
                             <textcolor>FFCCCCCC</textcolor>
                             <focusedcolor>FF1F2020</focusedcolor>
-                            <texturefocus colordiffuse="FFCCCCCC" border="30">fenlight_common/circle.png</texturefocus>
-                            <texturenofocus colordiffuse="$INFO[Window(10000).Property(fenskeleton.window_theme.extras)]" border="30">fenlight_common/circle.png</texturenofocus>  
+                            <texturefocus colordiffuse="FFCCCCCC" border="30">fenskeleton_common/circle.png</texturefocus>
+                            <texturenofocus colordiffuse="$INFO[Window(10000).Property(fenskeleton.window_theme.extras)]" border="30">fenskeleton_common/circle.png</texturenofocus>
                             <align>center</align>
                             <aligny>center</aligny>
                         </control>
@@ -1014,8 +1014,8 @@ class ExtrasUtils:
                             <font>font13</font> <!-- Fenlight-Skeleton_30 -->
                             <textcolor>FFCCCCCC</textcolor>
                             <focusedcolor>FF1F2020</focusedcolor>
-                            <texturefocus colordiffuse="FFCCCCCC" border="30">fenlight_common/circle.png</texturefocus>
-                            <texturenofocus colordiffuse="$INFO[Window(10000).Property(fenskeleton.window_theme.extras)]" border="30">fenlight_common/circle.png</texturenofocus>  
+                            <texturefocus colordiffuse="FFCCCCCC" border="30">fenskeleton_common/circle.png</texturefocus>
+                            <texturenofocus colordiffuse="$INFO[Window(10000).Property(fenskeleton.window_theme.extras)]" border="30">fenskeleton_common/circle.png</texturenofocus>
                             <align>center</align>
                             <aligny>center</aligny>
                         </control>
@@ -1033,8 +1033,8 @@ class ExtrasUtils:
                             <font>font13</font> <!-- Fenlight-Skeleton_30 -->
                             <textcolor>FFCCCCCC</textcolor>
                             <focusedcolor>FF1F2020</focusedcolor>
-                            <texturefocus colordiffuse="FFCCCCCC" border="30">fenlight_common/circle.png</texturefocus>
-                            <texturenofocus colordiffuse="$INFO[Window(10000).Property(fenskeleton.window_theme.extras)]" border="30">fenlight_common/circle.png</texturenofocus> 
+                            <texturefocus colordiffuse="FFCCCCCC" border="30">fenskeleton_common/circle.png</texturefocus>
+                            <texturenofocus colordiffuse="$INFO[Window(10000).Property(fenskeleton.window_theme.extras)]" border="30">fenskeleton_common/circle.png</texturenofocus>
                             <align>center</align>
                             <aligny>center</aligny>
                         </control>
@@ -1050,8 +1050,8 @@ class ExtrasUtils:
                             <font>font13</font> <!-- Fenlight-Skeleton_30 -->
                             <textcolor>FFCCCCCC</textcolor>
                             <focusedcolor>FF1F2020</focusedcolor>
-                            <texturefocus colordiffuse="FFCCCCCC" border="30">fenlight_common/circle.png</texturefocus>
-                            <texturenofocus colordiffuse="$INFO[Window(10000).Property(fenskeleton.window_theme.extras)]" border="30">fenlight_common/circle.png</texturenofocus>                         <align>center</align>
+                            <texturefocus colordiffuse="FFCCCCCC" border="30">fenskeleton_common/circle.png</texturefocus>
+                            <texturenofocus colordiffuse="$INFO[Window(10000).Property(fenskeleton.window_theme.extras)]" border="30">fenskeleton_common/circle.png</texturenofocus>                         <align>center</align>
                             <aligny>center</aligny>
                         </control>
                         <control type="button" id="16">
@@ -1066,8 +1066,8 @@ class ExtrasUtils:
                             <font>font13</font> <!-- Fenlight-Skeleton_30 -->
                             <textcolor>FFCCCCCC</textcolor>
                             <focusedcolor>FF1F2020</focusedcolor>
-                            <texturefocus colordiffuse="FFCCCCCC" border="30">fenlight_common/circle.png</texturefocus>
-                            <texturenofocus colordiffuse="$INFO[Window(10000).Property(fenskeleton.window_theme.extras)]" border="30">fenlight_common/circle.png</texturenofocus>
+                            <texturefocus colordiffuse="FFCCCCCC" border="30">fenskeleton_common/circle.png</texturefocus>
+                            <texturenofocus colordiffuse="$INFO[Window(10000).Property(fenskeleton.window_theme.extras)]" border="30">fenskeleton_common/circle.png</texturenofocus>
                             <align>center</align>
                             <aligny>center</aligny>
                         </control>
@@ -1083,8 +1083,8 @@ class ExtrasUtils:
                             <font>font13</font> <!-- Fenlight-Skeleton_30 -->
                             <textcolor>FFCCCCCC</textcolor>
                             <focusedcolor>FF1F2020</focusedcolor>
-                            <texturefocus colordiffuse="FFCCCCCC" border="30">fenlight_common/circle.png</texturefocus>
-                            <texturenofocus colordiffuse="$INFO[Window(10000).Property(fenskeleton.window_theme.extras)]" border="30">fenlight_common/circle.png</texturenofocus>
+                            <texturefocus colordiffuse="FFCCCCCC" border="30">fenskeleton_common/circle.png</texturefocus>
+                            <texturenofocus colordiffuse="$INFO[Window(10000).Property(fenskeleton.window_theme.extras)]" border="30">fenskeleton_common/circle.png</texturenofocus>
                             <align>center</align>
                             <aligny>center</aligny>
                         </control>
@@ -1129,13 +1129,13 @@ class ExtrasUtils:
                             <control type="image">
                                 <height>360</height>
                                 <width>933</width>
-                                    <texture colordiffuse="$INFO[Window(10000).Property(fenskeleton.window_theme.extras)]" border="30">fenlight_common/circle.png</texture>
+                                    <texture colordiffuse="$INFO[Window(10000).Property(fenskeleton.window_theme.extras)]" border="30">fenskeleton_common/circle.png</texture>
                                 <visible>Integer.IsGreater(Container({container_no}).NumItems,1)</visible>
                             </control>
                             <control type="image">
                                 <height>360</height>
                                 <width>1169</width>
-                                    <texture colordiffuse="$INFO[Window(10000).Property(fenskeleton.window_theme.extras)]" border="30">fenlight_common/circle.png</texture>
+                                    <texture colordiffuse="$INFO[Window(10000).Property(fenskeleton.window_theme.extras)]" border="30">fenskeleton_common/circle.png</texture>
                                 <visible>Integer.IsGreater(Container({container_no}).NumItems,2)</visible>
                             </control>
                             <control type="image">
@@ -1144,7 +1144,7 @@ class ExtrasUtils:
                                 <width>224</width>
                                 <height>348</height>
                                 <aspectratio>keep</aspectratio>
-                                <texture diffuse="fenlight_diffuse/poster-50.png" background="true">$INFO[Window.Property(more_from_collection.poster)]</texture>
+                                <texture diffuse="fenskeleton_diffuse/poster-50.png" background="true">$INFO[Window.Property(more_from_collection.poster)]</texture>
                             </control>
                             <control type="textbox">
                                 <left>235</left>
@@ -1179,7 +1179,7 @@ class ExtrasUtils:
                                     <height max="344">auto</height>
                                     <width max="220">auto</width>
                                     <aspectratio>keep</aspectratio>
-                                    <texture diffuse="fenlight_diffuse/poster-50.png" background="true">$INFO[ListItem.Property(thumbnail)]</texture>
+                                    <texture diffuse="fenskeleton_diffuse/poster-50.png" background="true">$INFO[ListItem.Property(thumbnail)]</texture>
                                 </control>
                             </itemlayout>
                             <focusedlayout height="360" width="236">
@@ -1193,7 +1193,7 @@ class ExtrasUtils:
                                     <top>5</top>
                                     <height>350</height>
                                     <width>236</width>
-                                    <texture colordiffuse="FFCCCCCC">fenlight_diffuse/poster-50.png</texture>
+                                    <texture colordiffuse="FFCCCCCC">fenskeleton_diffuse/poster-50.png</texture>
                                     <visible>Control.HasFocus({container_no}) | Control.HasFocus({scrollbar_no})</visible>
                                 </control>
                                 <control type="image">
@@ -1202,7 +1202,7 @@ class ExtrasUtils:
                                     <height max="344">auto</height>
                                     <width max="220">auto</width>
                                     <aspectratio>keep</aspectratio>
-                                    <texture diffuse="fenlight_diffuse/poster-50.png" background="true">$INFO[ListItem.Property(thumbnail)]</texture>
+                                    <texture diffuse="fenskeleton_diffuse/poster-50.png" background="true">$INFO[ListItem.Property(thumbnail)]</texture>
                                 </control>
                             </focusedlayout>
                         </control>
@@ -1212,9 +1212,9 @@ class ExtrasUtils:
                             <height>15</height>
                             <onup>{container_no}</onup>
                             <ondown>{n_container_no}</ondown>
-                            <texturesliderbackground colordiffuse="FF1F2020">fenlight_common/white.png</texturesliderbackground>
-                            <texturesliderbar colordiffuse="FF555556">fenlight_common/white.png</texturesliderbar>
-                            <texturesliderbarfocus colordiffuse="FFCCCCCC">fenlight_common/white.png</texturesliderbarfocus>
+                            <texturesliderbackground colordiffuse="FF1F2020">fenskeleton_common/white.png</texturesliderbackground>
+                            <texturesliderbar colordiffuse="FF555556">fenskeleton_common/white.png</texturesliderbar>
+                            <texturesliderbarfocus colordiffuse="FFCCCCCC">fenskeleton_common/white.png</texturesliderbarfocus>
                             <showonepage>false</showonepage>
                             <orientation>Horizontal</orientation>
                             <visible>String.IsEqual(Window.Property(enable_scrollbars),true) + [Control.HasFocus({container_no}) | Control.HasFocus({scrollbar_no})]</visible>
@@ -1224,7 +1224,7 @@ class ExtrasUtils:
                             <left>480</left>
                             <width>25</width>
                             <height>25</height>
-                            <texture colordiffuse="CCCCCCCC" background="true">fenlight_common/arrow_left.png</texture>
+                            <texture colordiffuse="CCCCCCCC" background="true">fenskeleton_common/arrow_left.png</texture>
                             <visible>[Control.HasFocus({container_no}) | Control.HasFocus({scrollbar_no})] + Container({container_no}).HasPrevious</visible>
                         </control>
                         <control type="image">
@@ -1232,7 +1232,7 @@ class ExtrasUtils:
                             <left>1120</left>
                             <width>25</width>
                             <height>25</height>
-                            <texture colordiffuse="CCCCCCCC" background="true" flipx="true">fenlight_common/arrow_left.png</texture>
+                            <texture colordiffuse="CCCCCCCC" background="true" flipx="true">fenskeleton_common/arrow_left.png</texture>
                             <visible>[Control.HasFocus({container_no}) | Control.HasFocus({scrollbar_no})] + Container({container_no}).HasNext</visible>
                         </control>
                     </control>
@@ -1280,7 +1280,7 @@ class ExtrasUtils:
                                     <height max="344">auto</height>
                                     <width max="376">auto</width>
                                     <aspectratio>keep</aspectratio>
-                                    <texture diffuse="fenlight_diffuse/landscape.png" background="true">$INFO[ListItem.Property(thumbnail)]</texture>
+                                    <texture diffuse="fenskeleton_diffuse/landscape.png" background="true">$INFO[ListItem.Property(thumbnail)]</texture>
                                 </control>
                             </itemlayout>
                             <focusedlayout height="360" width="392">
@@ -1294,7 +1294,7 @@ class ExtrasUtils:
                                     <top>32</top>
                                     <height>296</height>
                                     <width>393</width>
-                                    <texture colordiffuse="FFCCCCCC">fenlight_diffuse/landscape.png</texture>
+                                    <texture colordiffuse="FFCCCCCC">fenskeleton_diffuse/landscape.png</texture>
                                     <visible>Control.HasFocus({container_no}) | Control.HasFocus({scrollbar_no})</visible>
                                 </control>
                                 <control type="image">
@@ -1303,7 +1303,7 @@ class ExtrasUtils:
                                     <height max="344">auto</height>
                                     <width max="376">auto</width>
                                     <aspectratio>keep</aspectratio>
-                                    <texture diffuse="fenlight_diffuse/landscape.png" background="true">$INFO[ListItem.Property(thumbnail)]</texture>
+                                    <texture diffuse="fenskeleton_diffuse/landscape.png" background="true">$INFO[ListItem.Property(thumbnail)]</texture>
                                 </control>
                             </focusedlayout>
                         </control>
@@ -1314,9 +1314,9 @@ class ExtrasUtils:
                             <height>15</height>
                             <onup>{container_no}</onup>
                             <ondown>{n_container_no}</ondown>
-                            <texturesliderbackground colordiffuse="FF1F2020">fenlight_common/white.png</texturesliderbackground>
-                            <texturesliderbar colordiffuse="FF555556">fenlight_common/white.png</texturesliderbar>
-                            <texturesliderbarfocus colordiffuse="FFCCCCCC">fenlight_common/white.png</texturesliderbarfocus>
+                            <texturesliderbackground colordiffuse="FF1F2020">fenskeleton_common/white.png</texturesliderbackground>
+                            <texturesliderbar colordiffuse="FF555556">fenskeleton_common/white.png</texturesliderbar>
+                            <texturesliderbarfocus colordiffuse="FFCCCCCC">fenskeleton_common/white.png</texturesliderbarfocus>
                             <showonepage>false</showonepage>
                             <orientation>Horizontal</orientation>
                             <visible>String.IsEqual(Window.Property(enable_scrollbars),true) + [Control.HasFocus({container_no}) | Control.HasFocus({scrollbar_no})]</visible>
@@ -1326,7 +1326,7 @@ class ExtrasUtils:
                             <left>20</left>
                             <width>25</width>
                             <height>25</height>
-                            <texture colordiffuse="CCCCCCCC" background="true">fenlight_common/arrow_left.png</texture>
+                            <texture colordiffuse="CCCCCCCC" background="true">fenskeleton_common/arrow_left.png</texture>
                             <visible>[Control.HasFocus({container_no}) | Control.HasFocus({scrollbar_no})] + Container({container_no}).HasPrevious</visible>
                         </control>
                         <control type="image">
@@ -1334,7 +1334,7 @@ class ExtrasUtils:
                             <left>1125</left>
                             <width>25</width>
                             <height>25</height>
-                            <texture colordiffuse="CCCCCCCC" background="true" flipx="true">fenlight_common/arrow_left.png</texture>
+                            <texture colordiffuse="CCCCCCCC" background="true" flipx="true">fenskeleton_common/arrow_left.png</texture>
                             <visible>[Control.HasFocus({container_no}) | Control.HasFocus({scrollbar_no})] + Container({container_no}).HasNext</visible>
                         </control>
                     </control>
@@ -1373,7 +1373,7 @@ class ExtrasUtils:
                                 <control type="image">
                                     <height>360</height>
                                     <width>230</width>
-                                    <texture colordiffuse="$INFO[Window(10000).Property(fenskeleton.window_theme.extras)]" border="30">fenlight_common/circle.png</texture>
+                                    <texture colordiffuse="$INFO[Window(10000).Property(fenskeleton.window_theme.extras)]" border="30">fenskeleton_common/circle.png</texture>
                                 </control>
                                 <control type="image">
                                     <left>-35</left>
@@ -1402,7 +1402,7 @@ class ExtrasUtils:
                                     <left>90</left>
                                     <width>50</width>
                                     <aspectratio>keep</aspectratio>
-                                    <texture colordiffuse="red">fenlight_common/overlay_selected.png</texture>
+                                    <texture colordiffuse="red">fenskeleton_common/overlay_selected.png</texture>
                                     <visible>String.IsEqual(ListItem.Property(liked_status),true)</visible>
                                 </control>
                             </itemlayout>
@@ -1410,14 +1410,14 @@ class ExtrasUtils:
                                 <control type="image">
                                     <width>230</width>
                                     <height>360</height>
-                                    <texture colordiffuse="FFCCCCCC" border="30">fenlight_common/circle.png</texture>
+                                    <texture colordiffuse="FFCCCCCC" border="30">fenskeleton_common/circle.png</texture>
                                     <visible>Control.HasFocus({container_no}) | Control.HasFocus({scrollbar_no})</visible>
                                     <animation effect="fade" start="100" end="60" condition="Control.HasFocus({scrollbar_no})">Conditional</animation>
                                 </control>
                                 <control type="image">
                                     <height>360</height>
                                     <width>230</width>
-                                    <texture colordiffuse="$INFO[Window(10000).Property(fenskeleton.window_theme.extras)]" border="30">fenlight_common/circle.png</texture>
+                                    <texture colordiffuse="$INFO[Window(10000).Property(fenskeleton.window_theme.extras)]" border="30">fenskeleton_common/circle.png</texture>
                                     <visible>![Control.HasFocus({container_no}) | Control.HasFocus({scrollbar_no})]</visible>
                                 </control>
                                 <control type="image">
@@ -1461,7 +1461,7 @@ class ExtrasUtils:
                                     <left>90</left>
                                     <width>50</width>
                                     <aspectratio>keep</aspectratio>
-                                    <texture colordiffuse="red">fenlight_common/overlay_selected.png</texture>
+                                    <texture colordiffuse="red">fenskeleton_common/overlay_selected.png</texture>
                                     <visible>String.IsEqual(ListItem.Property(liked_status),true)</visible>
                                 </control>
                             </focusedlayout>
@@ -1473,9 +1473,9 @@ class ExtrasUtils:
                             <height>15</height>
                             <onup>{container_no}</onup>
                             <ondown>{n_container_no}</ondown>
-                            <texturesliderbackground colordiffuse="FF1F2020">fenlight_common/white.png</texturesliderbackground>
-                            <texturesliderbar colordiffuse="FF555556">fenlight_common/white.png</texturesliderbar>
-                            <texturesliderbarfocus colordiffuse="FFCCCCCC">fenlight_common/white.png</texturesliderbarfocus>
+                            <texturesliderbackground colordiffuse="FF1F2020">fenskeleton_common/white.png</texturesliderbackground>
+                            <texturesliderbar colordiffuse="FF555556">fenskeleton_common/white.png</texturesliderbar>
+                            <texturesliderbarfocus colordiffuse="FFCCCCCC">fenskeleton_common/white.png</texturesliderbarfocus>
                             <showonepage>false</showonepage>
                             <orientation>Horizontal</orientation>
                             <visible>String.IsEqual(Window.Property(enable_scrollbars),true) + [Control.HasFocus({container_no}) | Control.HasFocus({scrollbar_no})]</visible>
@@ -1485,7 +1485,7 @@ class ExtrasUtils:
                             <left>20</left>
                             <width>25</width>
                             <height>25</height>
-                            <texture colordiffuse="CCCCCCCC" background="true">fenlight_common/arrow_left.png</texture>
+                            <texture colordiffuse="CCCCCCCC" background="true">fenskeleton_common/arrow_left.png</texture>
                             <visible>[Control.HasFocus({container_no}) | Control.HasFocus({scrollbar_no})] + Container({container_no}).HasPrevious</visible>
                         </control>
                         <control type="image">
@@ -1493,7 +1493,7 @@ class ExtrasUtils:
                             <left>1135</left>
                             <width>25</width>
                             <height>25</height>
-                            <texture colordiffuse="CCCCCCCC" background="true" flipx="true">fenlight_common/arrow_left.png</texture>
+                            <texture colordiffuse="CCCCCCCC" background="true" flipx="true">fenskeleton_common/arrow_left.png</texture>
                             <visible>[Control.HasFocus({container_no}) | Control.HasFocus({scrollbar_no})] + Container({container_no}).HasNext</visible>
                         </control>
                     </control>
@@ -1527,7 +1527,7 @@ class ExtrasUtils:
                                 <control type="image">
                                     <height>360</height>
                                     <width>230</width>
-                                    <texture colordiffuse="$INFO[Window(10000).Property(fenskeleton.window_theme.extras)]" border="30">fenlight_common/circle.png</texture>
+                                    <texture colordiffuse="$INFO[Window(10000).Property(fenskeleton.window_theme.extras)]" border="30">fenskeleton_common/circle.png</texture>
                                 </control>
                                 <control type="image">
                                     <left>6</left>
@@ -1566,7 +1566,7 @@ class ExtrasUtils:
                                 <control type="image">
                                     <width>230</width>
                                     <height>360</height>
-                                    <texture colordiffuse="FFCCCCCC" border="30">fenlight_common/circle.png</texture>
+                                    <texture colordiffuse="FFCCCCCC" border="30">fenskeleton_common/circle.png</texture>
                                 </control>
                                 <control type="image">
                                     <left>6</left>
