@@ -75,10 +75,10 @@ def routing(sys):
         # FenSkeleton: play mode for TMDbHelper
         if mode == 'play':
                 from urllib.parse import unquote_plus
-                # Ensure settings sync has run (wires CocoScrapers if not already done)
+                # Ensure resolver defaults have been applied
                 try:
-                        from caches.settings_cache import _set_coco_defaults
-                        _set_coco_defaults()
+                        from caches.settings_cache import _set_resolver_defaults
+                        _set_resolver_defaults()
                 except: pass
                 # Inject title/year/ids from URL so scraping works without a TMDB API key
                 if params.get('title') and not params.get('custom_title'):
@@ -371,9 +371,9 @@ def routing(sys):
         elif mode == 'open_settings':
                 # Ensure settings DB is populated before opening window
                 try:
-                        from caches.settings_cache import sync_settings, _set_coco_defaults
+                        from caches.settings_cache import sync_settings, _set_resolver_defaults
                         sync_settings({'silent': 'true'})
-                        _set_coco_defaults()
+                        _set_resolver_defaults()
                 except: pass
                 from modules.kodi_utils import open_settings
                 return open_settings()
@@ -382,8 +382,8 @@ def routing(sys):
                 return hide_unhide_progress_items(params)
         elif mode == 'open_external_scraper_settings':
                 try:
-                        from caches.settings_cache import _set_coco_defaults
-                        _set_coco_defaults()
+                        from caches.settings_cache import _set_resolver_defaults
+                        _set_resolver_defaults()
                 except: pass
                 from modules.kodi_utils import external_scraper_settings
                 return external_scraper_settings()

@@ -493,9 +493,9 @@ def run_service():
 		xbmc.log('FenSkeleton: make_databases error: %s' % str(e), xbmc.LOGWARNING)
 
 	try:
-		from caches.settings_cache import sync_settings, _set_coco_defaults
+		from caches.settings_cache import sync_settings, _set_resolver_defaults
 		sync_settings({'silent': 'true'})
-		_set_coco_defaults()
+		_set_resolver_defaults()
 	except Exception as e:
 		xbmc.log('FenSkeleton: settings warmup error: %s' % str(e), xbmc.LOGWARNING)
 

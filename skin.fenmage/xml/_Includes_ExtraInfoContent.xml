@@ -7,7 +7,7 @@
 [B][COLOR accent_color]Version 0.1.10[/COLOR][/B]
 - Cut down version of FenLight, rebuilt around the Fen-Mage skin.
 - CocoScrapers integration fixed — external scraper name/module mapping corrected.
-- Service now warms up settings cache and wires CocoScrapers on first boot.
+- Service now warms up settings cache without forcing a scraper choice.
 - Added missing external scraper choice router handler.
 - Addon version correctly reported as 0.1.10.
 

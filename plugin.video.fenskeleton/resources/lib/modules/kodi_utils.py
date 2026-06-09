@@ -403,9 +403,9 @@ def open_settings():
 def external_scraper_settings():
 	try:
 		from caches.settings_cache import get_setting as _gs
-		external = _gs('fenskeleton.external_scraper.name') or 'script.module.cocoscrapers'
+		external = _gs('fenskeleton.external_scraper.name')
 		if external in ('empty_setting', '', None):
-			external = 'script.module.cocoscrapers'
+			return notification('Choose an External Scraper Module first')
 		execute_builtin('Addon.OpenSettings(%s)' % external)
 	except: pass
 

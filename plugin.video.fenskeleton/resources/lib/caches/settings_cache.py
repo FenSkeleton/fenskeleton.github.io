@@ -79,15 +79,9 @@ def get_setting(setting_id, fallback=''):
 def get_many(settings_list):
 	return settings_cache.get_many(settings_list)
 
-def _set_coco_defaults():
-	"""Pre-wire CocoScrapers and sensible playback defaults."""
+def _set_resolver_defaults():
+	"""Apply resolver defaults without choosing an external scraper for the user."""
 	try:
-		# Wire CocoScrapers as external scraper if not already set
-		current_module = settings_cache.get('external_scraper.module')
-		if not current_module or current_module in ('empty_setting', '', None):
-			settings_cache.set('external_scraper.name', 'script.module.cocoscrapers')
-			settings_cache.set('external_scraper.module', 'cocoscrapers')
-			settings_cache.set('provider.external', 'true')
 		# Default autoplay ON - we are a resolver, not a standalone browser
 		if settings_cache.get('autoplay.movie') in (None, 'empty_setting', ''):
 			settings_cache.set('autoplay.movie', 'true')
