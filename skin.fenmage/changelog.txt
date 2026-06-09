@@ -1,3 +1,8 @@
+FenMage v0.0.10
+- Replace the three-second branded startup splash with a quiet one-second black transition.
+- Update setup wording so CocoScrapers is no longer implied as the forced first-boot choice.
+- Repair remaining metadata encoding artifacts.
+
 0.0.7
 - Wire the empty-history New search button to FenSkeleton search input.
 

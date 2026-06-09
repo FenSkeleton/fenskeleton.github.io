@@ -1,4 +1,4 @@
-﻿# Changelog
+# Changelog
 
 All notable changes to FenSkeleton are documented here.
 
@@ -18,12 +18,32 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
-## [0.0.14] — Cleanup in the code tunnels
+## [0.0.15] - Easynews bones and quieter boot
+
+### Added
+
+- One quiet HTTP retry for Easynews requests
+- First-1-MB Easynews stream validation before Kodi receives a playback URL
+- Automatic fallback to the next resolve attempt when an Easynews stream is dead or too slow
+
+### Changed
+
+- External scraper selection now stays neutral until CocoScrapers, Magneto, or another compatible installed module is deliberately chosen
+- Fen-Mage startup now uses a quiet one-second black transition instead of the three-second branded splash
+- Remaining add-on metadata encoding artifacts have been repaired
+
+### Removed
+
+- Duplicate RPDB poster settings block from the Features menu
+
+---
+
+## [0.0.14] - Cleanup in the code tunnels
 
 ### Fixed
 
 - Repaired UTF-8 encoding artifacts in add-on metadata
-- Corrected repository path display in the installation guide: `zips → repository.fenskeleton`
+- Corrected repository path display in the installation guide: `zips -> repository.fenskeleton`
 - Renamed remaining live asset references from `fenlight_*` to `fenskeleton_*`
 - Rebuilt the plugin package using Kodi-safe archiving with consistent forward-slash paths
 
@@ -36,13 +56,13 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 | Component | Version | Status |
 | --- | --- | --- |
-| FenSkeleton plugin | `0.0.14` | ✓ |
-| Fen-Mage skin | `0.0.9` | ✓ |
-| FenSkeleton Repository | `1.0.2` | ✓ |
+| FenSkeleton plugin | `0.0.14` | OK |
+| Fen-Mage skin | `0.0.9` | OK |
+| FenSkeleton Repository | `1.0.2` | OK |
 
 ---
 
-## [0.0.13] — Stable Android checkpoint
+## [0.0.13] - Stable Android checkpoint
 
 First overnight-tested Android TV build.
 
@@ -59,13 +79,13 @@ First overnight-tested Android TV build.
 
 ---
 
-## [0.0.x] — Foundation
+## [0.0.x] - Foundation
 
 > *Version numbers for these milestones were not formally tracked. Add them as they are recovered.*
 
 ### Added
 
-- **Random Next Up** — opt-in shuffle mode that keeps the normal Next Episodes binge flow intact
+- **Random Next Up** - opt-in shuffle mode that keeps the normal Next Episodes binge flow intact
 - Home-screen search with consistent FenSkeleton labelling and normal keyboard and result browsing
 - Fen-Mage as the matching lightweight companion skin
 - Skin configuration controls accessible directly from the skin settings panel
@@ -82,11 +102,11 @@ First overnight-tested Android TV build.
 
 ---
 
-## Packaging rule — permanent reminder
+## Packaging rule - permanent reminder
 
 | Tool | Safe for Kodi? |
 | --- | --- |
-| `tar.exe` on Windows 10+ | ✅ Yes |
-| 7-Zip | ✅ Yes |
-| `Compress-Archive` in PowerShell | ❌ No — backslash paths |
-| Windows right-click → Send to Zip | ❌ No |
+| `tar.exe` on Windows 10+ | OK Yes |
+| 7-Zip | OK Yes |
+| `Compress-Archive` in PowerShell | ❌ No - backslash paths |
+| Windows right-click -> Send to Zip | ❌ No |

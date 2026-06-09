@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="skin.fenmage" version="0.0.9" name="Fen-Mage"
+<addon id="skin.fenmage" version="0.0.10" name="Fen-Mage"
 	provider-name="FenSkeleton">
 	<requires>
 		<import addon="xbmc.gui" version="5.17.0" />
@@ -30,9 +30,9 @@
 		<summary lang="en_GB">Thanks to Ivar - Estuary Mod!</summary>
 		<summary lang="en_NZ">Thanks to Ivar - Estuary Mod!</summary>
 		<summary lang="en_US">Thanks to Ivar - Estuary Mod!</summary>
-		<description lang="en_GB">Fen-Mage is the best way to view FenSkeleton. Built on Ivar Brandt's FenMage (Estuary MOD).[CR][CR]See Skin settings » Extra info to set up the skin.[CR][CR]See [B]CHANGELOG[/B] located in Skin settings » Extra info for latest changes.</description>
-		<description lang="en_NZ">Fen-Mage is the best way to view FenSkeleton. Built on Ivar Brandt's FenMage (Estuary MOD).[CR][CR]See Skin settings » Extra info to set up the skin.[CR][CR]See [B]CHANGELOG[/B] located in Skin settings » Extra info for latest changes.</description>
-		<description lang="en_US">Fen-Mage is the best way to view FenSkeleton. Built on Ivar Brandt's FenMage (Estuary MOD).[CR][CR]See Skin settings » Extra info to set up the skin.[CR][CR]See [B]CHANGELOG[/B] located in Skin settings » Extra info for latest changes.</description>
+		<description lang="en_GB">Fen-Mage is the best way to view FenSkeleton. Built on Ivar Brandt's FenMage (Estuary MOD).[CR][CR]See Skin settings - Extra info to set up the skin.[CR][CR]See [B]CHANGELOG[/B] located in Skin settings - Extra info for latest changes.</description>
+		<description lang="en_NZ">Fen-Mage is the best way to view FenSkeleton. Built on Ivar Brandt's FenMage (Estuary MOD).[CR][CR]See Skin settings - Extra info to set up the skin.[CR][CR]See [B]CHANGELOG[/B] located in Skin settings - Extra info for latest changes.</description>
+		<description lang="en_US">Fen-Mage is the best way to view FenSkeleton. Built on Ivar Brandt's FenMage (Estuary MOD).[CR][CR]See Skin settings - Extra info to set up the skin.[CR][CR]See [B]CHANGELOG[/B] located in Skin settings - Extra info for latest changes.</description>
 	</extension>
 </addon>
 

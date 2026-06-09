@@ -1,3 +1,11 @@
+FenSkeleton v0.0.15
+- Retry failed Easynews HTTPS requests once quietly.
+- Validate the first 1 MB of an Easynews stream before handing it to Kodi.
+- Allow failed or slow Easynews links to fall through to the next resolve attempt.
+- Keep external scraper selection neutral until a compatible module is deliberately chosen.
+- Remove the duplicated RPDB poster settings block.
+- Repair remaining metadata encoding artifacts.
+
 FenSkeleton v0.0.1
 - Initial public release.
 - Multi-debrid resolver support: Real-Debrid, AllDebrid, Premiumize, and TorBox.
