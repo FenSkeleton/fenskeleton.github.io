@@ -226,10 +226,10 @@ def container_content():
 def set_sort_method(handle, method):
 	xbmcplugin.addSortMethod(handle, {'episodes': 24, 'files': 5, 'label': 2, 'none': 0}[method])
 
-def make_session(url='https://'):
+def make_session(url='https://', max_retries=0):
 	import requests
 	session = requests.Session()
-	session.mount(url, requests.adapters.HTTPAdapter(pool_maxsize=100))
+	session.mount(url, requests.adapters.HTTPAdapter(pool_maxsize=100, max_retries=max_retries))
 	return session	
 
 def make_playlist(playlist_type='video'):

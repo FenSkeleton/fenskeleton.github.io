@@ -11,7 +11,7 @@ from modules.utils import chunks, remove_accents
 from modules.kodi_utils import make_session
 # from modules.kodi_utils import logger
 
-session = make_session()
+session = make_session(max_retries=1)
 
 class EasyNewsAPI:
 	def __init__(self):
@@ -169,11 +169,17 @@ class EasyNewsAPI:
 
 	def resolve_easynews(self, url_dl, use_non_seekable=False):
 		headers = {'Authorization': self.auth}
-		response = session.get(url_dl, headers=headers, stream=True, timeout=20)
-		if not response.ok: return None
-		if use_non_seekable: resolved_link = response.url + '|seekable=0'
-		else: resolved_link = response.url
-		return resolved_link
+		response = None
+		try:
+			response = session.get(url_dl, headers=headers, stream=True, timeout=30)
+			if not response.ok: return None
+			chunk = next(response.iter_content(chunk_size=1048576), b'')
+			if not chunk: return None
+			if use_non_seekable: return response.url + '|seekable=0'
+			return response.url
+		except: return None
+		finally:
+			if response is not None: response.close()
 
 EasyNews = EasyNewsAPI()
 
