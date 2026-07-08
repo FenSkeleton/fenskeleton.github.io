@@ -26,6 +26,23 @@ def get_trakt(params):
 						with_auth=params.get('with_auth', False), method=params.get('method'), pagination=params.get('pagination', True), page_no=params.get('page_no'))
 	return result[0] if params.get('pagination', True) else result
 
+def get_trakt_all_pages(params, limit=250):
+    page_no = 1
+    all_results = []
+    base_params = dict(params.get('params', {}))
+    base_params['limit'] = limit
+    while True:
+        page_params = dict(base_params)
+        result, page_count = call_trakt(params['path'] % params.get('path_insert', ''), params=page_params, data=params.get('data'), is_delete=params.get('is_delete', False),
+                                        with_auth=params.get('with_auth', False), method=params.get('method'), pagination=True, page_no=page_no)
+        if not result: break
+        all_results.extend(result)
+        try: page_count = int(page_count)
+        except: page_count = page_no
+        if page_no >= page_count: break
+        page_no += 1
+    return all_results
+
 def call_trakt(path, params={}, data=None, is_delete=False, with_auth=True, method=None, pagination=False, page_no=1):
 	def send_query():
 		resp = None
@@ -338,7 +355,7 @@ def trakt_get_hidden_items(list_type):
 	def _get_trakt_ids(item):
 		results_append(get_trakt_tvshow_id(item['show']['ids']))
 	def _process(params):
-		data = get_trakt(params)
+		data = get_trakt_all_pages(params)
 		threads = TaskPool().tasks(_get_trakt_ids, data, min(len(data), settings.max_threads()))
 		[i.join() for i in threads]
 		return results
@@ -412,7 +429,7 @@ def trakt_watchlist(media_type, dummy_arg):
 
 def trakt_fetch_collection_watchlist(list_type, media_type):
 	def _process(params):
-		data = get_trakt(params)
+		data = get_trakt_all_pages(params)
 		if list_type == 'watchlist': data = [i for i in data if i['type'] == key]
 		return [{'media_ids': {'tmdb': i[key]['ids'].get('tmdb', ''), 'imdb': i[key]['ids'].get('imdb', ''), 'tvdb': i[key]['ids'].get('tvdb', '')},
 		'title': i[key]['title'], 'collected_at': i.get(collected_at), 'released': i[key].get(r_key) if i[key].get(r_key) else
@@ -491,7 +508,7 @@ def trakt_search_lists(search_title, page_no):
 
 def trakt_favorites(media_type, dummy_arg):
 	def _process(params):
-		data = get_trakt(params)
+		data = get_trakt_all_pages(params)
 		return [{'media_ids': {'tmdb': i[i['type']]['ids'].get('tmdb', ''), 'imdb': i[i['type']]['ids'].get('imdb', ''), 'tvdb': i[i['type']]['ids'].get('tvdb', '')}} \
 					for i in data]
 	media_type = 'movies' if media_type in ('movie', 'movies') else 'shows'
@@ -501,7 +518,7 @@ def trakt_favorites(media_type, dummy_arg):
 
 def trakt_lists_with_media(media_type, imdb_id):
 	def _process(foo):
-		data = get_trakt(params)
+		data = get_trakt_all_pages(params)
 		result = [i for i in data if i['item_count'] > 0 and i['ids']['slug'] not in ('', 'None', None) and i['privacy'] == 'public']
 		return [kodi_utils.remove_keys(i, media_removals) for i in result]
 	media_removals = ('description', 'privacy', 'type', 'share_link', 'display_numbers', 'allow_comments', 'sort_by', 'sort_how', 'created_at', 'updated_at', 'comment_count')
@@ -682,7 +699,7 @@ def trakt_indicators_movies():
 	insert_list = []
 	insert_append = insert_list.append
 	params = {'path': 'sync/watched/movies%s', 'with_auth': True, 'pagination': False}
-	result = get_trakt(params)
+	result = get_trakt_all_pages(params)
 	threads = TaskPool().tasks(_process, result, min(len(result), settings.max_threads()))
 	[i.join() for i in threads]
 	trakt_cache.trakt_watched_cache.set_bulk_movie_watched(insert_list)
@@ -705,7 +722,7 @@ def trakt_indicators_tv():
 	insert_list = []
 	insert_append = insert_list.append
 	params = {'path': 'users/me/watched/shows?extended=full%s', 'with_auth': True, 'pagination': False}
-	result = get_trakt(params)
+	result = get_trakt_all_pages(params)
 	threads = TaskPool().tasks(_process, result, min(len(result), settings.max_threads()))
 	[i.join() for i in threads]
 	trakt_cache.trakt_watched_cache.set_bulk_tvshow_watched(insert_list)
@@ -716,7 +733,7 @@ def trakt_playback_progress():
 
 def trakt_comments(media_type, imdb_id):
 	def _process(foo):
-		data = get_trakt(params)
+		data = get_trakt_all_pages(params)
 		for count, item in enumerate(data, 1):
 			try:
 				rating = '%s/10 - ' % item['user_rating'] if item['user_rating'] else ''
@@ -793,7 +810,7 @@ def trakt_official_status(media_type):
 
 def trakt_get_my_calendar(recently_aired, current_date):
 	def _process(dummy):
-		data = get_trakt(params)
+		data = get_trakt_all_pages(params)
 		data = [{'sort_title': '%s s%s e%s' % (i['show']['title'], str(i['episode']['season']).zfill(2), str(i['episode']['number']).zfill(2)),
 				'media_ids': i['show']['ids'], 'season': i['episode']['season'], 'episode': i['episode']['number'], 'first_aired': i['first_aired']} \
 									for i in data if i['episode']['season'] > 0]
