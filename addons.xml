@@ -1,33 +1,47 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons>
-<addon id="plugin.video.fenskeleton" name="FenSkeleton" provider-name="FenSkeleton" version="0.0.15">
-    <requires>
-        <import addon="xbmc.python" version="3.0.0"/>
-        <import addon="script.module.pil" version="1.1.7"/>
-        <import addon="script.module.requests" version="2.19.1"/>
-    </requires>
-    <extension point="xbmc.python.pluginsource" library="resources/lib/fenskeleton.py">
-        <provides>video</provides>
-    </extension>
-    <extension point="xbmc.service" library="resources/lib/service.py"/>
-    <extension point="xbmc.python.module" library="resources/lib/"/>
-    <extension point="xbmc.addon.metadata">
-        <reuselanguageinvoker>false</reuselanguageinvoker>
-        <summary lang="en">FenSkeleton - lean multi-debrid resolver for TMDbHelper</summary>
-        <description lang="en">Fast, minimal debrid resolver built on the stable v0.1.10 engine. Pairs with TMDbHelper for browsing. Supports Real-Debrid, AllDebrid, Premiumize, TorBox and Easynews. External scraper modules such as CocoScrapers and Magneto are supported. Works with Fen-Mage skin.</description>
-        <platform>all</platform>
-        <email>fenskeleton@gmail.com</email>
-        <disclaimer lang="en">The author of this addon does not host any content. For personal use with content you have the right to access only.</disclaimer>
-        <license>GNU GENERAL PUBLIC LICENSE Version 2.0</license>
-        <assets>
-            <icon>icon.png</icon>
-            <fanart>fanart.jpg</fanart>
-        </assets>
-        <news>v0.0.15 - Easynews reliability and settings cleanup: retry failed Easynews requests once, validate the first 1 MB before playback, allow failed links to fall through to the next resolve attempt, keep external scraper selection neutral until configured, and remove the duplicate RPDB settings block.
+<addon id="plugin.video.fenskeleton" name="FenSkeleton" provider-name="FenSkeleton" version="0.0.16">
+  <requires>
+    <import addon="xbmc.python" version="3.0.0" />
+    <import addon="script.module.pil" version="1.1.7" />
+    <import addon="script.module.requests" version="2.19.1" />
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="resources/lib/fenskeleton.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.service" library="resources/lib/service.py" />
+  <extension point="xbmc.python.module" library="resources/lib/" />
+  <extension point="xbmc.addon.metadata">
+    <reuselanguageinvoker>false</reuselanguageinvoker>
+    <summary lang="en">FenSkeleton - lean multi-debrid resolver for TMDbHelper</summary>
+    <description lang="en">Fast, minimal debrid resolver built on the stable v0.1.10 engine. Pairs with TMDbHelper for browsing. Supports Real-Debrid, AllDebrid, Premiumize, TorBox and Easynews. External scraper modules such as CocoScrapers and Magneto are supported. Works with Fen-Mage skin.</description>
+    <platform>all</platform>
+    <email>fenskeleton@gmail.com</email>
+    <disclaimer lang="en">The author of this addon does not host any content. For personal use with content you have the right to access only.</disclaimer>
+    <license>GNU GENERAL PUBLIC LICENSE Version 2.0</license>
+    <assets>
+      <icon>icon.png</icon>
+      <fanart>fanart.jpg</fanart>
+    </assets>
+    <news>v0.0.15 - Easynews reliability and settings cleanup: retry failed Easynews requests once, validate the first 1 MB before playback, allow failed links to fall through to the next resolve attempt, keep external scraper selection neutral until configured, and remove the duplicate RPDB settings block.
 v0.0.13 - Android safety fix: directory refreshes and stale widget paths can no longer trigger Random Next Up playback; playback now uses a separate explicit click-only route.
 v0.0.3 - Clean video-addon package: removed embedded skin bundle; fixed Random Next Episodes to actually shuffle Next Up; retained TorBox device-code auth and icon set.
 v0.0.2 - v1 base checkpoint: TorBox device-code auth retained; Random Next Episodes route added; updated icon set retained.
 v0.0.1 - Initial public release.</news>
+  </extension>
+</addon>
+<addon id="repository.fenskeleton" name="FenSkeleton Repository" version="1.0.2" provider-name="FenSkeleton">
+    <extension point="xbmc.addon.repository" name="FenSkeleton Repository">
+        <dir>
+            <info compressed="false">https://fenskeleton.github.io/addons.xml</info>
+            <checksum>https://raw.githubusercontent.com/FenSkeleton/fenskeleton.github.io/main/addons.xml.md5</checksum>
+            <datadir zip="true">https://fenskeleton.github.io/zips/</datadir>
+        </dir>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary>FenSkeleton Kodi Repository</summary>
+        <description>Repository for FenSkeleton and FenMage.</description>
+        <platform>all</platform>
     </extension>
 </addon>
 <addon id="skin.fenmage" version="0.0.10" name="Fen-Mage"
@@ -66,18 +80,8 @@ v0.0.1 - Initial public release.</news>
 		<description lang="en_US">Fen-Mage is the best way to view FenSkeleton. Built on Ivar Brandt's FenMage (Estuary MOD).[CR][CR]See Skin settings - Extra info to set up the skin.[CR][CR]See [B]CHANGELOG[/B] located in Skin settings - Extra info for latest changes.</description>
 	</extension>
 </addon>
-<addon id="repository.fenskeleton" name="FenSkeleton Repository" version="1.0.2" provider-name="FenSkeleton">
-    <extension point="xbmc.addon.repository" name="FenSkeleton Repository">
-        <dir>
-            <info compressed="false">https://fenskeleton.github.io/addons.xml</info>
-            <checksum>https://raw.githubusercontent.com/FenSkeleton/fenskeleton.github.io/main/addons.xml.md5</checksum>
-            <datadir zip="true">https://fenskeleton.github.io/zips/</datadir>
-        </dir>
-    </extension>
-    <extension point="xbmc.addon.metadata">
-        <summary>FenSkeleton Kodi Repository</summary>
-        <description>Repository for FenSkeleton and FenMage.</description>
-        <platform>all</platform>
-    </extension>
-</addon>
+
+
+
+
 </addons>
