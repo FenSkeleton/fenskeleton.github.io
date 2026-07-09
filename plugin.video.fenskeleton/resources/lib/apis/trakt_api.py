@@ -709,7 +709,7 @@ def trakt_indicators_tv():
 		reset_at = item.get('reset_at', None)
 		if reset_at: reset_at = js2date(reset_at, '%Y-%m-%dT%H:%M:%S.%fZ')
 		show = item['show']
-		seasons = item['seasons']
+		seasons = item.get('seasons') or []
 		title = show['title']
 		tmdb_id = get_trakt_tvshow_id(show['ids'])
 		if not tmdb_id: return
