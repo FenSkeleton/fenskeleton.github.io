@@ -872,12 +872,18 @@ def trakt_sync_activities(force_update=False):
 	except: return 'failed'
 	cached = trakt_cache.reset_activity(latest)
 	fallback_date = '2020-01-01T00:00:01.000Z'
-	if not _compare(latest['all'], cached['all']): return 'not needed'
+	if not force_update and not _compare(latest['all'], cached['all']): return 'not needed'
 	lists_actions, refresh_movies_progress, refresh_shows_progress, clear_tvshow_watched_cache = [], False, False, False
 	cached_movies, latest_movies = cached['movies'], latest['movies']
 	cached_shows, latest_shows = cached['shows'], latest['shows']
 	cached_episodes, latest_episodes = cached['episodes'], latest['episodes']
 	cached_lists, latest_lists = cached['lists'], latest['lists']
+	if force_update:
+		clear_properties('movie')
+		clear_properties('episode')
+		trakt_indicators_movies()
+		trakt_indicators_tv()
+		refresh_movies_progress, refresh_shows_progress = True, True
 	if _compare(latest['recommendations'], cached.get('recommendations', fallback_date)): trakt_cache.clear_trakt_recommendations()
 	if _compare(latest['favorites'], cached.get('favorites', fallback_date)): trakt_cache.clear_trakt_favorites()
 	if _compare(latest_movies['collected_at'], cached_movies.get('collected_at', fallback_date)): trakt_cache.clear_trakt_collection_watchlist_data('collection', 'movie')
