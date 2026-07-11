@@ -7,6 +7,7 @@ import zipfile
 import json
 import os
 import re
+from threading import Thread
 
 ADDON_ID   = 'plugin.video.fenskeleton'
 SKIN_ID    = 'skin.fenmage'
@@ -498,6 +499,12 @@ def run_service():
 		_set_resolver_defaults()
 	except Exception as e:
 		xbmc.log('FenSkeleton: settings warmup error: %s' % str(e), xbmc.LOGWARNING)
+
+	try:
+		from apis.trakt_api import trakt_silent_repair_check
+		Thread(target=trakt_silent_repair_check, args=('startup',), kwargs={'min_interval': 86400}).start()
+	except Exception as e:
+		xbmc.log('FenSkeleton: Trakt silent repair startup check error: %s' % str(e), xbmc.LOGWARNING)
 
 	try:
 		from modules.settings import auto_start_fenskeleton

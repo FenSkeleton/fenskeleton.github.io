@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.fenskeleton" name="FenSkeleton" provider-name="FenSkeleton" version="0.0.18">
+<addon id="plugin.video.fenskeleton" name="FenSkeleton" provider-name="FenSkeleton" version="0.0.20">
   <requires>
     <import addon="xbmc.python" version="3.0.0" />
     <import addon="script.module.pil" version="1.1.7" />
@@ -22,7 +22,8 @@
       <icon>icon.png</icon>
       <fanart>fanart.jpg</fanart>
     </assets>
-    <news>v0.0.15 - Easynews reliability and settings cleanup: retry failed Easynews requests once, validate the first 1 MB before playback, allow failed links to fall through to the next resolve attempt, keep external scraper selection neutral until configured, and remove the duplicate RPDB settings block.
+    <news>v0.0.20 - Trakt safe repair: uses sync/watched/shows with extended=progress, silently self-heals missing TV watched data, protects local watched status from empty remote pulls, and keeps a manual Trakt Repair Sync button for emergencies.
+v0.0.15 - Easynews reliability and settings cleanup: retry failed Easynews requests once, validate the first 1 MB before playback, allow failed links to fall through to the next resolve attempt, keep external scraper selection neutral until configured, and remove the duplicate RPDB settings block.
 v0.0.13 - Android safety fix: directory refreshes and stale widget paths can no longer trigger Random Next Up playback; playback now uses a separate explicit click-only route.
 v0.0.3 - Clean video-addon package: removed embedded skin bundle; fixed Random Next Episodes to actually shuffle Next Up; retained TorBox device-code auth and icon set.
 v0.0.2 - v1 base checkpoint: TorBox device-code auth retained; Random Next Episodes route added; updated icon set retained.

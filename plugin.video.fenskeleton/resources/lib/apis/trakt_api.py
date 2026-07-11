@@ -214,9 +214,9 @@ def trakt_authenticate(dummy=''):
 			try: logger('FenSkeleton Trakt username lookup failed', str(e))
 			except Exception: pass
 		kodi_utils.notification('Trakt Account Authorized', 3000)
-		try: trakt_sync_activities(force_update=True)
+		try: trakt_silent_repair_check('post_auth', min_interval=0, force=True)
 		except Exception as e:
-			try: logger('FenSkeleton Trakt initial sync failed', str(e))
+			try: logger('FenSkeleton Trakt initial silent repair failed', str(e))
 			except Exception: pass
 		return True
 	try: logger('FenSkeleton Trakt authenticate', 'no token returned')
@@ -692,40 +692,68 @@ def get_trakt_tvshow_id(item):
 
 def trakt_indicators_movies():
 	def _process(item):
-		movie = item['movie']
-		tmdb_id = get_trakt_movie_id(movie['ids'])
-		if not tmdb_id: return
-		insert_append(('movie', tmdb_id, '', '', item['last_watched_at'], movie['title']))
+		try:
+			movie = item['movie']
+			tmdb_id = get_trakt_movie_id(movie['ids'])
+			if not tmdb_id: return
+			insert_append(('movie', tmdb_id, '', '', item['last_watched_at'], movie['title']))
+		except Exception: pass
 	insert_list = []
 	insert_append = insert_list.append
 	params = {'path': 'sync/watched/movies%s', 'with_auth': True, 'pagination': False}
 	result = get_trakt_all_pages(params)
+	if not isinstance(result, list):
+		try: logger('FenSkeleton Trakt watched movies pull failed', str(result))
+		except Exception: pass
+		return 0
+	try: logger('FenSkeleton Trakt watched shows pull', 'raw_shows=%s endpoint=sync/watched/shows extended=progress' % len(result))
+	except Exception: pass
 	threads = TaskPool().tasks(_process, result, min(len(result), settings.max_threads()))
 	[i.join() for i in threads]
-	trakt_cache.trakt_watched_cache.set_bulk_movie_watched(insert_list)
+	if insert_list:
+		trakt_cache.trakt_watched_cache.set_bulk_movie_watched(insert_list)
+	else:
+		try: logger('FenSkeleton Trakt watched movies safe skip', 'remote returned zero usable watched movies; local cache not cleared')
+		except Exception: pass
+	return len(insert_list)
 
 def trakt_indicators_tv():
 	def _process(item):
-		reset_at = item.get('reset_at', None)
-		if reset_at: reset_at = js2date(reset_at, '%Y-%m-%dT%H:%M:%S.%fZ')
-		show = item['show']
-		seasons = item.get('seasons') or []
-		title = show['title']
-		tmdb_id = get_trakt_tvshow_id(show['ids'])
-		if not tmdb_id: return
-		for s in seasons:
-			season_no, episodes = s['number'], s['episodes']
-			for e in episodes:
-				last_watched_at = e['last_watched_at']
-				if reset_at and reset_at > js2date(last_watched_at, '%Y-%m-%dT%H:%M:%S.%fZ'): continue
-				insert_append(('episode', tmdb_id, season_no, e['number'], last_watched_at, title))
+		try:
+			reset_at = item.get('reset_at', None)
+			if reset_at: reset_at = js2date(reset_at, '%Y-%m-%dT%H:%M:%S.%fZ')
+			show = item['show']
+			seasons = item.get('seasons') or []
+			title = show['title']
+			tmdb_id = get_trakt_tvshow_id(show['ids'])
+			if not tmdb_id: return
+			for s in seasons:
+				season_no, episodes = s['number'], s.get('episodes') or []
+				for e in episodes:
+					last_watched_at = e['last_watched_at']
+					if reset_at and reset_at > js2date(last_watched_at, '%Y-%m-%dT%H:%M:%S.%fZ'): continue
+					insert_append(('episode', tmdb_id, season_no, e['number'], last_watched_at, title))
+		except Exception: pass
 	insert_list = []
 	insert_append = insert_list.append
-	params = {'path': 'users/me/watched/shows?extended=full%s', 'with_auth': True, 'pagination': False}
-	result = get_trakt_all_pages(params)
+	params = {'path': 'sync/watched/shows%s', 'params': {'extended': 'progress'}, 'with_auth': True, 'pagination': False}
+	result = get_trakt_all_pages(params, limit=100)
+	if not isinstance(result, list):
+		try: logger('FenSkeleton Trakt watched shows pull failed', str(result))
+		except Exception: pass
+		return 0
+	try: logger('FenSkeleton Trakt watched shows pull', 'raw_shows=%s endpoint=sync/watched/shows extended=progress' % len(result))
+	except Exception: pass
 	threads = TaskPool().tasks(_process, result, min(len(result), settings.max_threads()))
 	[i.join() for i in threads]
-	trakt_cache.trakt_watched_cache.set_bulk_tvshow_watched(insert_list)
+	if insert_list:
+		trakt_cache.trakt_watched_cache.set_bulk_tvshow_watched(insert_list)
+		try: logger('FenSkeleton Trakt watched shows saved', 'episodes=%s' % len(insert_list))
+		except Exception: pass
+	else:
+		try: logger('FenSkeleton Trakt watched shows safe skip', 'remote returned zero usable watched episodes; local cache not cleared')
+		except Exception: pass
+	return len(insert_list)
 
 def trakt_playback_progress():
 	params = {'path': 'sync/playback%s', 'with_auth': True, 'pagination': False}
@@ -838,6 +866,95 @@ def make_trakt_slug(name):
 	name = re.sub('--+', '-', name)
 	return name
 
+
+def force_full_sync(params=None):
+	# SAFE repair sync: never clears local watched/progress before a successful remote pull.
+	try:
+		kodi_utils.notification('Trakt Repair Sync Started', 3000)
+	except Exception: pass
+	try:
+		result = trakt_repair_sync()
+		try: logger('FenSkeleton Trakt repair sync', str(result))
+		except Exception: pass
+		if result == 'success':
+			kodi_utils.notification('Trakt Repair Sync Complete', 3000)
+		else:
+			kodi_utils.notification('Trakt Repair Sync: %s' % result, 3000)
+		try: kodi_utils.kodi_refresh()
+		except Exception: pass
+		return result
+	except Exception as e:
+		try: logger('FenSkeleton Trakt repair sync failed', str(e))
+		except Exception: pass
+		kodi_utils.notification('Trakt Repair Sync Failed', 3000)
+		return 'failed'
+
+def trakt_repair_sync():
+	"""Pull Trakt data into local cache without first wiping local watched status."""
+	if not settings.trakt_user_active(): return 'no account'
+	try:
+		latest = trakt_get_activity()
+		if not latest: return 'failed activity'
+		trakt_cache.reset_activity(latest)
+	except Exception as e:
+		try: logger('FenSkeleton Trakt repair activity failed', str(e))
+		except Exception: pass
+		return 'failed activity'
+	movie_count = trakt_indicators_movies()
+	tv_count = trakt_indicators_tv()
+	try:
+		progress_info = trakt_playback_progress()
+	except Exception:
+		progress_info = None
+	if isinstance(progress_info, list):
+		trakt_progress_movies(progress_info)
+		trakt_progress_tv(progress_info)
+	try:
+		logger('FenSkeleton Trakt repair counts', 'movies=%s episodes=%s progress=%s' % (movie_count, tv_count, len(progress_info) if isinstance(progress_info, list) else 'none'))
+	except Exception: pass
+	return 'success'
+
+
+def _trakt_local_counts():
+	counts = {'movies': 0, 'episodes': 0, 'progress': 0}
+	try:
+		from caches.base_cache import connect_database
+		dbcon = connect_database('trakt_db')
+		counts['movies'] = dbcon.execute('SELECT COUNT(*) FROM watched WHERE db_type = ?', ('movie',)).fetchone()[0]
+		counts['episodes'] = dbcon.execute('SELECT COUNT(*) FROM watched WHERE db_type = ?', ('episode',)).fetchone()[0]
+		counts['progress'] = dbcon.execute('SELECT COUNT(*) FROM progress WHERE db_type = ?', ('episode',)).fetchone()[0]
+	except Exception as e:
+		try: logger('FenSkeleton Trakt local count failed', str(e))
+		except Exception: pass
+	return counts
+
+def trakt_silent_repair_check(reason='auto', min_interval=86400, force=False):
+	# Invisible Trakt self-heal. Runs safe repair only when local TV watched data looks broken.
+	if not settings.trakt_user_active(): return 'no account'
+	if kodi_utils.get_property('fenskeleton.trakt_silent_repair_running') == 'true': return 'running'
+	current_time = int(time.time())
+	try: last_run = int(float(get_setting('trakt.last_silent_repair', '0')))
+	except Exception: last_run = 0
+	if not force and last_run and current_time - last_run < int(min_interval): return 'throttled'
+	counts = _trakt_local_counts()
+	needs_repair = force or (counts['episodes'] == 0 and (counts['movies'] > 0 or counts['progress'] > 0 or reason in ('startup', 'next_up', 'post_auth')))
+	try: logger('FenSkeleton Trakt silent repair check', 'reason=%s force=%s counts=%s needs_repair=%s' % (reason, force, counts, needs_repair))
+	except Exception: pass
+	if not needs_repair: return 'not needed'
+	kodi_utils.set_property('fenskeleton.trakt_silent_repair_running', 'true')
+	set_setting('trakt.last_silent_repair', str(current_time))
+	try:
+		result = trakt_repair_sync()
+		try: logger('FenSkeleton Trakt silent repair result', 'reason=%s result=%s' % (reason, result))
+		except Exception: pass
+		return result
+	except Exception as e:
+		try: logger('FenSkeleton Trakt silent repair failed', str(e))
+		except Exception: pass
+		return 'failed'
+	finally:
+		kodi_utils.clear_property('fenskeleton.trakt_silent_repair_running')
+
 def trakt_get_activity():
 	params = {'path': 'sync/last_activities%s', 'with_auth': True, 'pagination': False}
 	return get_trakt(params)
@@ -863,7 +980,9 @@ def trakt_sync_activities(force_update=False):
 	def _check_daily_expiry():
 		return int(time.time()) >= int(get_setting('fenskeleton.trakt.next_daily_clear', '0'))
 	if refresh_token_check(): trakt_refresh_token()
-	if force_update: trakt_cache.clear_all_trakt_cache_data(silent=True, refresh=False)
+	if force_update:
+		try: logger('FenSkeleton Trakt force update', 'safe mode: not clearing local cache before remote pull')
+		except Exception: pass
 	elif _check_daily_expiry():
 		trakt_cache.clear_daily_cache()
 		set_setting('trakt.next_daily_clear', str(int(time.time()) + (24*3600)))

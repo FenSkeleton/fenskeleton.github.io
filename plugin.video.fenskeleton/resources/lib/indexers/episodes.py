@@ -318,7 +318,20 @@ def build_single_episode(list_type, params={}):
 		include_unwatched, include_unaired, nextep_content = settings.nextep_include_unwatched(), settings.nextep_include_unaired(), settings.nextep_method()
 		sort_key, sort_direction = settings.nextep_sort_key(), settings.nextep_sort_direction()
 		include_airdate = settings.nextep_include_airdate()
+		if settings.watched_indicators() == 1:
+			try:
+				from apis.trakt_api import trakt_silent_repair_check
+				trakt_silent_repair_check('next_up', min_interval=3600)
+			except Exception as e:
+				try:
+					from modules.kodi_utils import logger
+					logger('FenSkeleton Trakt silent repair next up failed', str(e))
+				except Exception: pass
 		data = ws.get_next_episodes(nextep_content)
+		try:
+			from modules.kodi_utils import logger
+			logger('FenSkeleton Next Up source', 'watched_indicators=%s method=%s raw_candidates=%s' % (watched_indicators, nextep_content, len(data)))
+		except Exception: pass
 		if settings.nextep_limit_history(): data = data[:settings.nextep_limit()]
 		hidden_list = ws.get_hidden_progress_items(watched_indicators)
 		if hidden_list: data = [i for i in data if not i['media_ids']['tmdb'] in hidden_list]
@@ -401,6 +414,12 @@ def build_single_episode(list_type, params={}):
 										key=lambda i: i['first_aired'])
 				item_list = [i for i in item_list if not i in airing_today]
 				item_list = airing_today + item_list
+	try:
+		if list_type_compare.startswith('next'):
+			from modules.kodi_utils import logger
+			logger('FenSkeleton Next Up built', 'items=%s final_type=%s' % (len(item_list), list_type_compare))
+			for item in item_list[:10]: logger('FenSkeleton Next Up item', item.get('name', 'unknown'))
+	except Exception: pass
 	kodi_utils.add_items(handle, [i['list_items'] for i in item_list])
 	kodi_utils.set_content(handle, 'episodes')
 	kodi_utils.set_category(handle, _get_category_name())

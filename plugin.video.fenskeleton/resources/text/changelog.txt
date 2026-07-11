@@ -1,3 +1,7 @@
+v0.0.19
+- Added Force Full Trakt Sync tool.
+- Clear Trakt Cache now refreshes with force_update=True.
+
 FenSkeleton v0.0.15
 - Retry failed Easynews HTTPS requests once quietly.
 - Validate the first 1 MB of an Easynews stream before handing it to Kodi.
