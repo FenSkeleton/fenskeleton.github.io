@@ -1,3 +1,10 @@
+v0.0.21
+- Added the first local Watch State foundation.
+- Local watch-state now syncs quietly in the background from the existing Trakt cache.
+- Added a small Trakt synced notification after successful local sync.
+- Watch State tools are kept out of the normal user menu; this is foundation work for future Simkl/local provider support.
+- No Simkl or Trakt remote writes are performed in this foundation build.
+
 v0.0.19
 - Added Force Full Trakt Sync tool.
 - Clear Trakt Cache now refreshes with force_update=True.

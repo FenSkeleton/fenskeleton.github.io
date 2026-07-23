@@ -239,6 +239,14 @@ class Navigator:
                 self.add({'mode': 'language_invoker_choice', 'isFolder': 'false'}, 'Toggle Language Invoker (ADVANCED!!)', 'settings2')
                 self.end_directory()
 
+
+        def watch_state_tools(self):
+                self.add({'mode': 'watchstate.initialize_action', 'isFolder': 'false'}, 'Initialize Local Watch State', 'settings')
+                self.add({'mode': 'watchstate.import_trakt_action', 'isFolder': 'false'}, 'Import Trakt Cache to Local Watch State', 'trakt')
+                self.add({'mode': 'watchstate.summary', 'isFolder': 'false'}, 'Local Watch State Summary', 'settings2')
+                self.add({'mode': 'watchstate.cleanup_action', 'isFolder': 'false'}, 'Clean 14-Day Local Activity History', 'settings')
+                self.end_directory()
+
         def maintenance(self):
                 self.add({'mode': 'check_databases_integrity_cache', 'isFolder': 'false'}, 'Check for Corrupt Databases', 'settings')
                 self.add({'mode': 'clean_databases_cache', 'isFolder': 'false'}, 'Clean Databases', 'settings')

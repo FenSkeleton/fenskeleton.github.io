@@ -507,6 +507,12 @@ def run_service():
 		xbmc.log('FenSkeleton: Trakt silent repair startup check error: %s' % str(e), xbmc.LOGWARNING)
 
 	try:
+		from modules import watchstate
+		Thread(target=watchstate.auto_import_trakt_cache, args=('startup',), kwargs={'min_interval': 21600, 'notify': True}).start()
+	except Exception as e:
+		xbmc.log('FenSkeleton: WatchState startup sync error: %s' % str(e), xbmc.LOGWARNING)
+
+	try:
 		from modules.settings import auto_start_fenskeleton
 		from modules import kodi_utils
 		if auto_start_fenskeleton():
