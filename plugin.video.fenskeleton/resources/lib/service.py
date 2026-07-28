@@ -464,6 +464,32 @@ def skin_needs_install_or_upgrade():
 		return False
 	return True
 
+
+
+def show_version_changelog_once():
+	try:
+		from caches.settings_cache import get_setting, set_setting
+		from modules import kodi_utils
+		version = ADDON.getAddonInfo('version') if ADDON else '0.0.22'
+		last_seen = get_setting('fenskeleton.changelog.last_seen_version', 'empty_setting')
+		if last_seen == version: return
+		if not str(version).startswith('0.0.22'):
+			return
+		def _show():
+			try:
+				import xbmcgui
+				kodi_utils.sleep(5000)
+				text = 'FenSkeleton updated to v%s[CR][CR]What changed:[CR]- Fixed the Trakt device activation window closing too quickly.[CR]- Added Android-safe WatchState startup handling so background sync does not fight with scraping or playback.[CR]- Added working Simkl account authorization and status checks.[CR]- Added Simkl watch-state mode: Off / Simkl Only / Trakt + Simkl.[CR]- Added Simkl watched and progress writes for new playback activity.[CR]- Added a manual Trakt watched history import tool for Simkl with preview and confirmation.[CR][CR]Simkl history import never runs automatically.' % version
+				xbmcgui.Dialog().ok('FenSkeleton Updated', text)
+				set_setting('changelog.last_seen_version', version)
+			except Exception as e:
+				try: xbmc.log('FenSkeleton: changelog popup error: %s' % str(e), xbmc.LOGWARNING)
+				except Exception: pass
+		Thread(target=_show).start()
+	except Exception as e:
+		try: xbmc.log('FenSkeleton: changelog popup schedule error: %s' % str(e), xbmc.LOGWARNING)
+		except Exception: pass
+
 # ---------------------------------------------------------------------------
 # Service entry point
 # ---------------------------------------------------------------------------

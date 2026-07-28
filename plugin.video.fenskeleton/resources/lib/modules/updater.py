@@ -9,7 +9,7 @@ from modules import kodi_utils
 logger = kodi_utils.logger
 
 def get_location(insert=''):
-	base = 'https://fenskeleton.github.io/packages'
+	base = 'https://fenskeleton.github.io/zips/repository.fenskeleton'
 	return '%s/%s' % (base.rstrip('/'), insert.lstrip('/')) if insert else '%s/' % base.rstrip('/')
 
 def get_versions():
@@ -63,7 +63,7 @@ def update_check(action=4):
 	if not current_version:
 		return kodi_utils.ok_dialog(heading='FenSkeleton Updater', text='Could not read installed version.')
 	if not online_version:
-		return kodi_utils.ok_dialog(heading='FenSkeleton Updater', text='Kodi repo refresh has been triggered.[CR][CR]Direct GitHub update files were not found at:[CR]%s[CR][CR]Add these to GitHub under /packages:[CR]addons.xml[CR]addons.xml.md5[CR]fenskeleton_version[CR]plugin.video.fenskeleton-%s.zip' % (get_location(''), current_version))
+		return kodi_utils.ok_dialog(heading='FenSkeleton Updater', text='Kodi repo refresh has been triggered.[CR][CR]FenSkeleton updates are served through the Kodi repository at:[CR]%s[CR][CR]Install/update from the repository package if Kodi does not refresh automatically.' % get_location(''))
 	show_after_action = True
 	if not version_check(current_version, online_version):
 		if action == 4: return kodi_utils.ok_dialog(heading='FenSkeleton Updater', text='Installed Version: [B]%s[/B][CR]Online Version: [B]%s[/B][CR][CR][B]No Direct Update Available[/B][CR][CR]Kodi repo refresh was still triggered.' \

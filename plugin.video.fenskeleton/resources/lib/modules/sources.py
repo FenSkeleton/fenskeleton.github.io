@@ -104,23 +104,27 @@ class Sources():
                         if not self.ext_folder or not self.ext_name: return self.disable_external('Error Importing External Module')
 
         def get_sources(self):
-                if not self.progress_dialog and not self.background: self._make_progress_dialog()
-                results = []
-                if self.prescrape and any(x in self.active_internal_scrapers for x in self.default_internal_scrapers):
-                        if self.prepare_internal_scrapers():
-                                results = self.collect_prescrape_results()
-                                if results: results = self.process_results(results)
-                if not results:
-                        self.prescrape = False
-                        self.prepare_internal_scrapers()
-                        if self.active_external: self.activate_external_providers()
-                        elif not self.active_internal_scrapers: self._kill_progress_dialog()
-                        self.orig_results = self.collect_results()
-                        if not self.orig_results and not self.active_external: self._kill_progress_dialog()
-                        results = self.process_results(self.orig_results)
-                if not results: return self._process_post_results()
-                if self.autoscrape: return results
-                else: return self.play_source(results)
+                kodi_utils.set_property('fenskeleton.source_scrape_running', 'true')
+                try:
+                        if not self.progress_dialog and not self.background: self._make_progress_dialog()
+                        results = []
+                        if self.prescrape and any(x in self.active_internal_scrapers for x in self.default_internal_scrapers):
+                                if self.prepare_internal_scrapers():
+                                        results = self.collect_prescrape_results()
+                                        if results: results = self.process_results(results)
+                        if not results:
+                                self.prescrape = False
+                                self.prepare_internal_scrapers()
+                                if self.active_external: self.activate_external_providers()
+                                elif not self.active_internal_scrapers: self._kill_progress_dialog()
+                                self.orig_results = self.collect_results()
+                                if not self.orig_results and not self.active_external: self._kill_progress_dialog()
+                                results = self.process_results(self.orig_results)
+                        if not results: return self._process_post_results()
+                        if self.autoscrape: return results
+                        else: return self.play_source(results)
+                finally:
+                        kodi_utils.clear_property('fenskeleton.source_scrape_running')
 
         def collect_results(self):
                 self.sources.extend(self.prescrape_sources)

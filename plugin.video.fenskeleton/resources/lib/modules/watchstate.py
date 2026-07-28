@@ -234,14 +234,60 @@ def _trakt_cache_counts():
 	return counts
 
 
-def auto_import_trakt_cache(reason='auto', min_interval=21600, notify=True):
-	"""Background local sync from the current Trakt cache. No remote writes. No user menu needed."""
+
+def _kodi_busy_for_watchstate():
+	"""True when background sync should not run because playback/scraping has priority."""
+	try:
+		if kodi_utils.get_property('fenskeleton.source_scrape_running') == 'true': return True
+	except Exception:
+		pass
+	try:
+		import xbmc
+		if xbmc.Player().isPlayingVideo(): return True
+	except Exception:
+		pass
+	return False
+
+
+def _wait_for_watchstate_idle(initial_delay=180, retry_delay=30, max_wait=900):
+	"""Delay local maintenance until Kodi is idle. Return False if it should skip."""
+	try: initial_delay = int(initial_delay or 180)
+	except Exception: initial_delay = 180
+	try: retry_delay = int(retry_delay or 30)
+	except Exception: retry_delay = 30
+	try: max_wait = int(max_wait or 900)
+	except Exception: max_wait = 900
+	elapsed = 0
+	if initial_delay > 0:
+		kodi_utils.sleep(initial_delay * 1000)
+		elapsed += initial_delay
+	while _kodi_busy_for_watchstate():
+		if elapsed >= max_wait:
+			logger('###FenSkeleton WatchState Auto Sync###:', 'skipped busy max_wait=%s' % max_wait)
+			return False
+		kodi_utils.sleep(retry_delay * 1000)
+		elapsed += retry_delay
+	return True
+
+
+def auto_import_trakt_cache(reason='auto', min_interval=21600, notify=True, delay=None, max_wait=900):
+	"""Background local sync from current Trakt cache. Local-only and Android-safe."""
 	try:
 		try:
 			from modules import settings
 			if not settings.trakt_user_active(): return 'no trakt account'
+			if delay is None:
+				try: delay = int(settings.get_setting('fenskeleton.watchstate.auto_sync_delay', '180'))
+				except Exception: delay = 180
+			try: min_interval = int(settings.get_setting('fenskeleton.watchstate.auto_sync_interval', str(min_interval)))
+			except Exception: pass
+			try:
+				notify = settings.get_setting('fenskeleton.watchstate.sync_notification', 'true') == 'true'
+			except Exception:
+				pass
 		except Exception:
 			pass
+
 		if kodi_utils.get_property('fenskeleton.watchstate_auto_sync_running') == 'true': return 'running'
 		current_time = int(time.time())
 		last_completed = _get_sync_completed('trakt', 'auto_local_import')
@@ -251,10 +297,20 @@ def auto_import_trakt_cache(reason='auto', min_interval=21600, notify=True):
 			except Exception: last_time = 0
 			if last_time and current_time - last_time < int(min_interval):
 				return 'throttled'
+
+		# Startup maintenance must never compete with source scraping or playback.
+		if not _wait_for_watchstate_idle(initial_delay=delay, retry_delay=30, max_wait=max_wait):
+			record_provider_sync('trakt', 'auto_local_import', 'skipped', 'busy playback/scraping', {'reason': reason})
+			return 'busy'
+
 		counts = _trakt_cache_counts()
 		if counts['movies'] == 0 and counts['episodes'] == 0 and counts['progress'] == 0:
 			record_provider_sync('trakt', 'auto_local_import', 'skipped', 'empty trakt cache', counts)
 			return 'empty trakt cache'
+		if _kodi_busy_for_watchstate():
+			record_provider_sync('trakt', 'auto_local_import', 'skipped', 'busy playback/scraping', counts)
+			return 'busy'
+
 		kodi_utils.set_property('fenskeleton.watchstate_auto_sync_running', 'true')
 		result = import_trakt_cache_to_local(silent=True)
 		message = 'movies=%s episodes=%s progress=%s recent=%s reason=%s' % (result.get('movies', 0), result.get('episodes', 0), result.get('progress', 0), result.get('recent', 0), reason)

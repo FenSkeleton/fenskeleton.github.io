@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons>
-<addon id="plugin.video.fenskeleton" name="FenSkeleton" provider-name="FenSkeleton" version="0.0.21">
+<addon id="plugin.video.fenskeleton" name="FenSkeleton" provider-name="FenSkeleton" version="0.0.22">
   <requires>
     <import addon="xbmc.python" version="3.0.0" />
     <import addon="script.module.pil" version="1.1.7" />
@@ -23,7 +23,8 @@
       <icon>icon.png</icon>
       <fanart>fanart.jpg</fanart>
     </assets>
-    <news>v0.0.21 - Local Watch State foundation: quietly syncs existing Trakt cache into a local watch-state database in the background, shows a small Trakt synced notification, and prepares for future Simkl/local provider support without remote writes.
+    <news>v0.0.22 - Android-safe WatchState and auth groundwork: delays local Trakt cache sync until Kodi is idle, avoids blocking scraping/playback, fixes Trakt device activation polling so the code window stays open correctly, and adds the first read-only Simkl authorization skeleton.
+v0.0.21 - Local Watch State foundation: quietly syncs existing Trakt cache into a local watch-state database in the background, shows a small Trakt synced notification, and prepares for future Simkl/local provider support without remote writes.
 v0.0.20 - Trakt safe repair: uses sync/watched/shows with extended=progress, silently self-heals missing TV watched data, protects local watched status from empty remote pulls, and keeps a manual Trakt Repair Sync button for emergencies.
 v0.0.15 - Easynews reliability and settings cleanup: retry failed Easynews requests once, validate the first 1 MB before playback, allow failed links to fall through to the next resolve attempt, keep external scraper selection neutral until configured, and remove the duplicate RPDB settings block.
 v0.0.13 - Android safety fix: directory refreshes and stale widget paths can no longer trigger Random Next Up playback; playback now uses a separate explicit click-only route.

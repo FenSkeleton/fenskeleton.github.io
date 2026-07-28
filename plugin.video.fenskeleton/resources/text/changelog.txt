@@ -1,3 +1,15 @@
+v0.0.22
+- Test 4: Hid Trakt/Simkl client keys on the FenSkeleton settings screen.
+- Test 4: Corrected the updater info URL to the FenSkeleton repository zip location.
+- Test 4: Guarded Trakt silent repair so startup settings timing cannot stop the repair pull.
+- Fixed the Trakt device activation window closing too quickly; pending authorization now keeps polling instead of erroring out after a few seconds.
+- Added Android-safe WatchState startup handling so background local sync waits until Kodi is idle and does not compete with source scraping or playback.
+- Added working Simkl account authorization, revoke, and status checks.
+- Added Simkl Watch State Mode: Off, Simkl Only, and Trakt + Simkl.
+- Added Simkl watched/progress writes for new playback activity.
+- Added manual Trakt watched history import to Simkl with preview and confirmation. This does not run automatically after Simkl login.
+- Added a one-time update changelog popup so users can see what changed after an update.
+
 v0.0.21
 - Added the first local Watch State foundation.
 - Local watch-state now syncs quietly in the background from the existing Trakt cache.
@@ -24,4 +36,3 @@ FenSkeleton v0.0.1
 - FenMage skin integration with widget and main menu management.
 - External scraper support.
 - TMDbHelper player integration.
-

@@ -116,13 +116,13 @@ def trakt_get_device_token(device_codes):
 	result = None
 	progressDialog = None
 	try:
-		# Match the working v10 request format. Trakt was returning HTTP 400 forever when this was changed.
+		# Device Code Flow must keep the code window open while Trakt returns
+		# Pending. Do not close the window on the first non-200 response.
 		headers = {'Content-Type': 'application/json', 'trakt-api-version': '2', 'trakt-api-key': CLIENT_ID}
 		data = {'code': device_codes['device_code'], 'client_id': CLIENT_ID, 'client_secret': CLIENT_SECRET}
 		start = time.time()
 		expires_in = int(device_codes.get('expires_in', 600))
-		# Keep Mark's faster popup feel, but do not change the payload mechanics.
-		sleep_interval = 2
+		sleep_interval = max(5, int(device_codes.get('interval', 5)))
 		user_code = str(device_codes['user_code'])
 		auth_url = 'https://trakt.tv/activate?code=%s' % str(user_code)
 		qr_code = make_qrcode(auth_url) or ''
@@ -143,27 +143,55 @@ def trakt_get_device_token(device_codes):
 			kodi_utils.sleep(sleep_interval*1000)
 			poll_no += 1
 			try:
-				# IMPORTANT: v10 used data=json.dumps(data), not json=data. Restore that exactly.
+				# Trakt's device-token endpoint expects the raw JSON string payload.
 				response = requests.post(API_ENDPOINT % 'oauth/device/token', data=json.dumps(data), headers=headers, timeout=20)
 				status_code = response.status_code
 				try: response_text = response.text[:500]
 				except Exception: response_text = ''
+				try:
+					response_json = response.json()
+				except Exception:
+					response_json = {}
+
 				# Never write access or refresh tokens into kodi.log.
-				safe_body = '[redacted token response]' if status_code == 200 else response_text
+				safe_body = '[redacted token response]' if status_code == 200 else (str(response_json)[:500] if response_json else response_text)
 				try: logger('FenSkeleton Trakt token poll %s' % poll_no, 'status=%s body=%s' % (status_code, safe_body))
 				except Exception: pass
+
 				if status_code == 200:
-					result = response.json()
+					result = response_json or response.json()
 					break
-				elif status_code == 400:
+
+				# Trakt device flow status codes:
+				# 400 = pending; 404 invalid code; 409 already used; 410 expired;
+				# 418 denied; 429 slow down. Only pending/slow-down should keep the
+				# window alive.
+				if status_code == 400:
 					progress = min(99, int(100 * (time.time() - start)/float(expires_in)))
 					progressDialog.update(content, progress)
 					continue
+				elif status_code == 429:
+					sleep_interval += 5
+					progress = min(99, int(100 * (time.time() - start)/float(expires_in)))
+					progressDialog.update(content + '[CR]Trakt asked us to slow down polling...', progress)
+					continue
+				elif status_code in (404, 409, 410, 418):
+					try: logger('FenSkeleton Trakt token poll stopped', 'status=%s' % status_code)
+					except Exception: pass
+					break
 				else:
+					# Cloudflare / temporary HTML / transient network responses should
+					# not close the device-code dialog immediately. Give it a few tries
+					# within the normal expiry window.
+					if poll_no < 3:
+						progress = min(99, int(100 * (time.time() - start)/float(expires_in)))
+						progressDialog.update(content + '[CR]Waiting for Trakt...', progress)
+						continue
 					break
 			except Exception as e:
 				try: logger('FenSkeleton Trakt token poll exception', str(e))
 				except Exception: pass
+				if poll_no < 3: continue
 				break
 	except Exception as e:
 		try: logger('FenSkeleton Trakt device token fatal', str(e))
@@ -942,9 +970,15 @@ def trakt_silent_repair_check(reason='auto', min_interval=86400, force=False):
 	except Exception: pass
 	if not needs_repair: return 'not needed'
 	kodi_utils.set_property('fenskeleton.trakt_silent_repair_running', 'true')
-	set_setting('trakt.last_silent_repair', str(current_time))
 	try:
 		result = trakt_repair_sync()
+		# Only throttle after a completed repair attempt. Some Kodi startup contexts
+		# can briefly throw "Unknown addon id" when settings are touched too early.
+		try:
+			if result == 'success': set_setting('trakt.last_silent_repair', str(current_time))
+		except Exception as e:
+			try: logger('FenSkeleton Trakt silent repair timestamp skipped', str(e))
+			except Exception: pass
 		try: logger('FenSkeleton Trakt silent repair result', 'reason=%s result=%s' % (reason, result))
 		except Exception: pass
 		return result

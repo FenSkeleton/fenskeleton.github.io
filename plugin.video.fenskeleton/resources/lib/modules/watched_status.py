@@ -71,6 +71,18 @@ def make_batch_insert(action, media_type, media_id, season, episode, last_played
 def refresh_container(refresh=True):
 	if refresh: kodi_refresh()
 
+
+def _simkl_thread(action, media_type='', media_id='', title='', year='', season='', episode='', tvdb_id='', progress_percent=None):
+	try:
+		from apis import simkl_api
+		if not simkl_api.simkl_enabled(): return
+		if action in ('mark_as_watched', 'mark_as_unwatched'):
+			Thread(target=simkl_api.simkl_mark_watched, kwargs={'media_type': media_type, 'tmdb_id': media_id, 'title': title, 'year': year, 'season': season, 'episode': episode, 'tvdb_id': tvdb_id, 'remove': action == 'mark_as_unwatched'}).start()
+		elif action == 'progress':
+			Thread(target=simkl_api.simkl_save_progress, kwargs={'media_type': media_type, 'tmdb_id': media_id, 'title': title, 'year': year, 'season': season, 'episode': episode, 'tvdb_id': tvdb_id, 'progress_percent': progress_percent}).start()
+	except Exception:
+		pass
+
 def active_tvshows_information(status_type):
 	def _process(item):
 		media_id = item['media_id']
@@ -262,6 +274,7 @@ def set_bookmark(params):
 		title, season, episode = params.get('title'), params.get('season'), params.get('episode')
 		adjusted_current_time = float(curr_time) - 5
 		resume_point = round(adjusted_current_time/float(total_time)*100,1)
+		_simkl_thread('progress', media_type=media_type, media_id=tmdb_id, title=title, season=season, episode=episode, progress_percent=resume_point)
 		watched_indicators = settings.watched_indicators()
 		if watched_indicators == 1:
 			if trakt_official_status(media_type) == False: return
@@ -279,13 +292,14 @@ def mark_movie(params):
 	action, media_type = params.get('action'), 'movie'
 	refresh, from_playback = params.get('refresh', 'true') == 'true', params.get('from_playback', 'false') == 'true'
 	if from_playback: refresh = False
-	tmdb_id, title = params.get('tmdb_id'), params.get('title')
+	tmdb_id, title, year = params.get('tmdb_id'), params.get('title'), params.get('year', '')
 	watched_indicators = settings.watched_indicators()
 	if watched_indicators == 1:
 		if from_playback and trakt_official_status(media_type) == False: sleep(1000)
 		elif not trakt_watched_status_mark(action, 'movies', tmdb_id): return notification('Error')
 		clear_trakt_collection_watchlist_data('watchlist', media_type)
 	watched_status_mark(watched_indicators, media_type, tmdb_id, action, title=title)
+	_simkl_thread(action, media_type=media_type, media_id=tmdb_id, title=title, year=year)
 	refresh_container(refresh)
 
 def mark_tvshow(params):
@@ -353,7 +367,7 @@ def mark_season(params):
 	refresh_container()
 
 def mark_episode(params):
-	season, episode, title = int(params.get('season')), int(params.get('episode')), params.get('title')
+	season, episode, title, year = int(params.get('season')), int(params.get('episode')), params.get('title'), params.get('year', '')
 	if season == 0: return notification('Failed')
 	action, media_type = params.get('action'), 'episode'
 	refresh, from_playback = params.get('refresh', 'true') == 'true', params.get('from_playback', 'false') == 'true'

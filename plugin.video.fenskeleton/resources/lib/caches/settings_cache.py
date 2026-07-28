@@ -222,6 +222,9 @@ def default_settings():
 #======+============= Trakt Cache
 {'setting_id': 'trakt.sync_interval', 'setting_type': 'action', 'setting_default': '60', 'min_value': '5', 'max_value': '600'},
 {'setting_id': 'trakt.refresh_widgets', 'setting_type': 'boolean', 'setting_default': 'true'},
+{'setting_id': 'watchstate.auto_sync_delay', 'setting_type': 'action', 'setting_default': '180', 'min_value': '30', 'max_value': '900'},
+{'setting_id': 'watchstate.auto_sync_interval', 'setting_type': 'action', 'setting_default': '21600', 'min_value': '3600', 'max_value': '86400'},
+{'setting_id': 'watchstate.sync_notification', 'setting_type': 'boolean', 'setting_default': 'true'},
 #==================== UTC Time Offset
 {'setting_id': 'datetime.offset', 'setting_type': 'action', 'setting_default': '0', 'min_value': '-15', 'max_value': '15'},
 #==================== Downloads
@@ -344,6 +347,14 @@ def default_settings():
 {'setting_id': 'trakt.user', 'setting_type': 'string', 'setting_default': 'empty_setting'},
 {'setting_id': 'trakt.client', 'setting_type': 'string', 'setting_default': '34bd5b5e4cb091bee1f4be79f2bb9b0217228310b969f2886894df4126130e0f'},
 {'setting_id': 'trakt.secret', 'setting_type': 'string', 'setting_default': '2fad603d5907b056d4eba8eddbe4b346083f0f478e6bc69e78061e8970a66ae9'},
+{'setting_id': 'trakt.last_silent_repair', 'setting_type': 'string', 'setting_default': '0'},
+#==================== Simkl
+{'setting_id': 'simkl.user', 'setting_type': 'string', 'setting_default': 'empty_setting'},
+{'setting_id': 'simkl.client', 'setting_type': 'string', 'setting_default': 'bfca8f21b7198002268fff99201650449681b752ba3ae78622682d15f7fa9817'},
+{'setting_id': 'simkl.secret', 'setting_type': 'string', 'setting_default': 'empty_setting'},
+{'setting_id': 'simkl.token', 'setting_type': 'string', 'setting_default': 'empty_setting'},
+{'setting_id': 'simkl.provider_mode', 'setting_type': 'action', 'setting_default': '1', 'settings_options': {'0': 'Off', '1': 'Simkl Only', '2': 'Trakt + Simkl'}},
+{'setting_id': 'changelog.last_seen_version', 'setting_type': 'string', 'setting_default': 'empty_setting'},
 #==================== TMDb API
 {'setting_id': 'tmdb_api', 'setting_type': 'string', 'setting_default': '988a2aa8b12f7899d2c63ddcde37a3af'},
 #==================== TMDb Lists

@@ -114,12 +114,18 @@ def routing(sys):
         elif 'custom_key.' in mode:
                 from modules import custom_keys
                 return exec('custom_keys.%s()' % mode.split('custom_key.')[1])
+        elif 'watchstate.' in mode:
+                from modules import watchstate
+                return exec('watchstate.%s(params)' % mode.split('.')[1])
         elif 'trakt.' in mode:
                 if '.list' in mode:
                         from indexers import trakt_lists
                         return exec('trakt_lists.%s(params)' % mode.split('.')[2])
                 from apis import trakt_api
                 return exec('trakt_api.%s(params)' % mode.split('.')[1])
+        elif 'simkl.' in mode:
+                from apis import simkl_api
+                return exec('simkl_api.%s(params)' % mode.split('.')[1])
         elif mode == 'play_random_next_up':
                 # Explicit click-only action used by the safe Random Next Up tile.
                 from modules.episode_tools import EpisodeTools

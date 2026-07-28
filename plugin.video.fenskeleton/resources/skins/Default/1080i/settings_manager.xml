@@ -1385,7 +1385,7 @@
                           <visible>Container(2000).HasFocus(50)</visible>
                           <property name="setting_label">Client ID Key</property>
                           <property name="setting_type">numeric</property>
-                          <property name="setting_value">$INFO[Window(10000).Property(fenskeleton.trakt.client)]</property>
+                          <property name="setting_value">[Hidden]</property>
                           <property name="setting_description">Enter here your Trakt Client ID key</property>
                           <onclick>RunPlugin(plugin://plugin.video.fenskeleton/?mode=settings_manager.set_string&amp;setting_id=trakt.client)</onclick>
                       </item>
@@ -1402,7 +1402,7 @@
                           <visible>Container(2000).HasFocus(50)</visible>
                           <property name="setting_label">Client Secret Key</property>
                           <property name="setting_type">numeric</property>
-                          <property name="setting_value">$INFO[Window(10000).Property(fenskeleton.trakt.secret)]</property>
+                          <property name="setting_value">[Hidden]</property>
                           <property name="setting_description">Enter here your Trakt Client Secret key</property>
                           <onclick>RunPlugin(plugin://plugin.video.fenskeleton/?mode=settings_manager.set_string&amp;setting_id=trakt.secret)</onclick>
                       </item>
@@ -1414,6 +1414,55 @@
                           <property name="setting_value">...</property>
                           <property name="setting_description">Restore default Trakt Client Secret Key</property>
                           <onclick>RunPlugin(plugin://plugin.video.fenskeleton/?mode=settings_manager.restore_setting_default&amp;setting_id=trakt.secret)</onclick>
+                      </item>
+        <!-- Simkl -->
+                      <item>
+                          <visible>Container(2000).HasFocus(50)</visible>
+                          <property name="setting_label">Simkl</property>
+                          <property name="setting_type">separator</property>
+                          <onclick>noop</onclick>
+                      </item>
+                      <item>
+                          <visible>Container(2000).HasFocus(50)</visible>
+                          <visible>String.IsEqual(Window(10000).Property(fenskeleton.simkl.user),empty_setting)</visible>
+                          <property name="setting_label">Authorize</property>
+                          <property name="setting_type">action</property>
+                          <property name="setting_value">...</property>
+                          <property name="setting_description">Authorize your Simkl account for Simkl watch-state tracking.</property>
+                          <onclick>RunPlugin(plugin://plugin.video.fenskeleton/?mode=simkl.simkl_authenticate)</onclick>
+                      </item>
+                      <item>
+                          <visible>Container(2000).HasFocus(50)</visible>
+                          <visible>!String.IsEqual(Window(10000).Property(fenskeleton.simkl.user),empty_setting)</visible>
+                          <property name="setting_label">Revoke Authorization</property>
+                          <property name="setting_type">action</property>
+                          <property name="setting_value">$INFO[Window(10000).Property(fenskeleton.simkl.user)]</property>
+                          <property name="setting_description">Clear the locally stored Simkl authorization token</property>
+                          <onclick>RunPlugin(plugin://plugin.video.fenskeleton/?mode=simkl.simkl_revoke_authentication)</onclick>
+                      </item>
+                      <item>
+                          <visible>Container(2000).HasFocus(50)</visible>
+                          <property name="setting_label">Client ID Key</property>
+                          <property name="setting_type">numeric</property>
+                          <property name="setting_value">[Hidden]</property>
+                          <property name="setting_description">Enter your Simkl Client ID key. Do not commit private keys to public GitHub repos.</property>
+                          <onclick>RunPlugin(plugin://plugin.video.fenskeleton/?mode=settings_manager.set_string&amp;setting_id=simkl.client)</onclick>
+                      </item>
+                      <item>
+                          <visible>Container(2000).HasFocus(50)</visible>
+                          <property name="setting_label">Client Secret Key</property>
+                          <property name="setting_type">numeric</property>
+                          <property name="setting_value">[Hidden]</property>
+                          <property name="setting_description">Optional for later server-side OAuth testing. PIN flow does not need it.</property>
+                          <onclick>RunPlugin(plugin://plugin.video.fenskeleton/?mode=settings_manager.set_string&amp;setting_id=simkl.secret)</onclick>
+                      </item>
+                      <item>
+                          <visible>Container(2000).HasFocus(50)</visible>
+                          <property name="setting_label">Check Simkl Status</property>
+                          <property name="setting_type">action</property>
+                          <property name="setting_value">...</property>
+                          <property name="setting_description">Check whether the stored Simkl token is present and usable</property>
+                          <onclick>RunPlugin(plugin://plugin.video.fenskeleton/?mode=simkl.simkl_status)</onclick>
                       </item>
         <!-- TMDb API -->
                       <item>

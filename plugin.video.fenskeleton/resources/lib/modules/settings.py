@@ -12,6 +12,30 @@ def trakt_client():
 def trakt_secret():
 	return get_setting('fenskeleton.trakt.secret', '')
 
+DEFAULT_SIMKL_CLIENT_ID = 'bfca8f21b7198002268fff99201650449681b752ba3ae78622682d15f7fa9817'
+
+def simkl_client():
+	client = get_setting('fenskeleton.simkl.client', DEFAULT_SIMKL_CLIENT_ID)
+	if client in (None, '', 'empty_setting'):
+		client = DEFAULT_SIMKL_CLIENT_ID
+	return client
+
+def simkl_secret():
+	return get_setting('fenskeleton.simkl.secret', '')
+
+def simkl_token():
+	return get_setting('fenskeleton.simkl.token', '')
+
+def simkl_user_active():
+	return get_setting('fenskeleton.simkl.user', 'empty_setting') not in (None, 'empty_setting', '')
+
+def simkl_provider_mode():
+	try: return int(get_setting('fenskeleton.simkl.provider_mode', '1'))
+	except Exception: return 1
+
+def simkl_enabled():
+	return simkl_provider_mode() != 0 and simkl_token() not in (None, '', 'empty_setting')
+
 def trakt_user_active():
 	return get_setting('fenskeleton.trakt.user', 'empty_setting') not in (None, 'empty_setting', '')
 
