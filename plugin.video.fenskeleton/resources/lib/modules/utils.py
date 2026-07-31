@@ -334,10 +334,15 @@ def unzip(zip_location, destination_location, destination_check, show_busy=True)
 def make_qrcode(url):
 	if url == None: return
 	import segno
+	import hashlib
 	from os import path
 	from modules.kodi_utils import addon_profile
 	try:
-		art_path = path.join(addon_profile(), 'qr.png')
+		# Kodi caches images aggressively by file path. Using one static qr.png
+		# can leave the previous provider's QR image on screen, e.g. Simkl
+		# showing an old Trakt activation QR. Make the path unique per URL.
+		url_hash = hashlib.md5(str(url).encode('utf-8')).hexdigest()[:12]
+		art_path = path.join(addon_profile(), 'qr_%s.png' % url_hash)
 		qrcode = segno.make(url, micro=False)
 		qrcode.save(art_path, scale=20)
 	except: return

@@ -1,3 +1,7 @@
+v0.0.23
+- Fixed QR code image caching so Simkl authorization displays the correct Simkl QR instead of a stale Trakt QR.
+- No account changes required.
+
 v0.0.22
 - Test 4: Hid Trakt/Simkl client keys on the FenSkeleton settings screen.
 - Test 4: Corrected the updater info URL to the FenSkeleton repository zip location.
