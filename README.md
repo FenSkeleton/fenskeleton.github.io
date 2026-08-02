@@ -1,3 +1,18 @@
+## Current Status
+
+Current public version: **v0.0.23**
+
+FenSkeleton now includes:
+
+- Working Trakt support
+- Working Simkl support
+- Local WatchState safety layer
+- Manual Trakt → Simkl history import
+- Android-safe background sync behavior
+- Safer device authorization handling
+- One-time changelog popup after updates
+
+FenSkeleton supports users who want to stay with Trakt, move to Simkl, or use both providers together.
 [0.0.14] — Cleanup in the code tunnels
 Fixed
 Repaired UTF-8 encoding artifacts in add-on metadata
