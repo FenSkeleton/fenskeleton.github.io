@@ -1,6 +1,6 @@
 ## Current Status
 
-Current public version: **v0.0.23**
+Current public version: **v0.0.24**
 
 FenSkeleton now includes:
 

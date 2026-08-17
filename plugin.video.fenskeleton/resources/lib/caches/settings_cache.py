@@ -218,7 +218,7 @@ def default_settings():
 {'setting_id': 'update.username', 'setting_type': 'string', 'setting_default': 'fenskeleton'},
 {'setting_id': 'update.location', 'setting_type': 'string', 'setting_default': 'fenskeleton.github.io'},
 #==================== Watched Indicators
-{'setting_id': 'watched_indicators', 'setting_type': 'action', 'setting_default': '0', 'settings_options': {'0': 'FenSkeleton', '1': 'Trakt'}},
+{'setting_id': 'watched_indicators', 'setting_type': 'action', 'setting_default': '0', 'settings_options': {'0': 'FenSkeleton', '1': 'Trakt', '2': 'Simkl'}},
 #======+============= Trakt Cache
 {'setting_id': 'trakt.sync_interval', 'setting_type': 'action', 'setting_default': '60', 'min_value': '5', 'max_value': '600'},
 {'setting_id': 'trakt.refresh_widgets', 'setting_type': 'boolean', 'setting_default': 'true'},

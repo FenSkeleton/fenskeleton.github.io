@@ -5,6 +5,14 @@ from modules.metadata import tvshow_meta, episodes_meta, all_episodes_meta
 from modules.utils import jsondate_to_datetime, adjust_premiered_date, make_day, get_datetime, get_current_timestamp, title_key, date_difference, TaskPool
 # logger = kodi_utils.logger
 
+def _safe_next_episode_timestamp(value, default=None):
+	"""Parse provider timestamps with or without fractional seconds."""
+	if value in (None, ''): return default
+	for date_format in ('%Y-%m-%dT%H:%M:%S.%fZ', '%Y-%m-%dT%H:%M:%SZ', '%Y-%m-%d %H:%M:%S'):
+		try: return jsondate_to_datetime(value, date_format)
+		except Exception: pass
+	return default
+
 def build_episode_list(params):
 	def _process():
 		for item in episodes_data:
@@ -318,24 +326,26 @@ def build_single_episode(list_type, params={}):
 		include_unwatched, include_unaired, nextep_content = settings.nextep_include_unwatched(), settings.nextep_include_unaired(), settings.nextep_method()
 		sort_key, sort_direction = settings.nextep_sort_key(), settings.nextep_sort_direction()
 		include_airdate = settings.nextep_include_airdate()
-		if settings.watched_indicators() == 1:
-			try:
-				from apis.trakt_api import trakt_silent_repair_check
-				trakt_silent_repair_check('next_up', min_interval=3600)
-			except Exception as e:
-				try:
-					from modules.kodi_utils import logger
-					logger('FenSkeleton Trakt silent repair next up failed', str(e))
-				except Exception: pass
 		data = ws.get_next_episodes(nextep_content)
+		if watched_indicators == 2:
+			try:
+				from apis.simkl_api import simkl_next_items
+				native_next = simkl_next_items()
+				if native_next: data = native_next
+			except Exception: pass
 		try:
 			from modules.kodi_utils import logger
 			logger('FenSkeleton Next Up source', 'watched_indicators=%s method=%s raw_candidates=%s' % (watched_indicators, nextep_content, len(data)))
 		except Exception: pass
 		if settings.nextep_limit_history(): data = data[:settings.nextep_limit()]
+		elif watched_indicators == 1:
+			# A multi-year Trakt history can contain hundreds of candidates. The
+			# list is already newest-first; bounding metadata expansion prevents
+			# every Next Episodes open from walking the entire account.
+			data = data[:max(75, settings.nextep_limit())]
 		hidden_list = ws.get_hidden_progress_items(watched_indicators)
 		if hidden_list: data = [i for i in data if not i['media_ids']['tmdb'] in hidden_list]
-		if watched_indicators == 1: resformat, resinsert, list_type = '%Y-%m-%dT%H:%M:%S.%fZ', '2000-01-01T00:00:00.000Z', 'episode.next_random_trakt' if randomize_next else 'episode.next_trakt'
+		if watched_indicators in (1, 2): resformat, resinsert, list_type = '%Y-%m-%dT%H:%M:%S.%fZ', '2000-01-01T00:00:00.000Z', 'episode.next_random_trakt' if randomize_next else 'episode.next_trakt'
 		else: resformat, resinsert, list_type = '%Y-%m-%d %H:%M:%S', '2000-01-01 00:00:00', 'episode.next_random_fenskeleton' if randomize_next else 'episode.next_fenskeleton'
 		if include_unwatched != 0:
 			if include_unwatched in (1, 3):
@@ -388,7 +398,7 @@ def build_single_episode(list_type, params={}):
 	elif list_type_starts_with('next_'):
 		def func(function):
 			if sort_key == 'name': return title_key(function, ignore_articles)
-			elif sort_key == 'last_played': return jsondate_to_datetime(function, resformat)
+			elif sort_key == 'last_played': return _safe_next_episode_timestamp(function, _safe_next_episode_timestamp(resinsert))
 			else: return function
 		if settings.nextep_airing_today():
 			airing_today = sorted([i for i in item_list if date_difference(current_date, jsondate_to_datetime(i.get('first_aired', '2100-12-31'), '%Y-%m-%d').date(), 0)],
@@ -425,4 +435,3 @@ def build_single_episode(list_type, params={}):
 	kodi_utils.set_category(handle, _get_category_name())
 	kodi_utils.end_directory(handle, cacheToDisc=False)
 	kodi_utils.set_view_mode('view.episodes_single', 'episodes', is_external)
-

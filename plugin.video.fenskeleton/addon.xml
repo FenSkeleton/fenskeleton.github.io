@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.fenskeleton" name="FenSkeleton" provider-name="FenSkeleton" version="0.0.23">
+<addon id="plugin.video.fenskeleton" name="FenSkeleton" provider-name="FenSkeleton" version="0.0.24">
   <requires>
     <import addon="xbmc.python" version="3.0.0" />
     <import addon="script.module.pil" version="1.1.7" />
@@ -22,7 +22,8 @@
       <icon>icon.png</icon>
       <fanart>fanart.jpg</fanart>
     </assets>
-    <news>v0.0.23 - Fixed QR code image caching so Simkl authorization displays the correct Simkl QR instead of a stale Trakt QR. No account changes required.
+    <news>v0.0.24 - Full standalone Simkl test build: native Simkl history, progress, Next Episodes and list reads; activity-gated incremental refresh; complete playback scrobbling; Simkl-only indicators; manual migration and repair tools; removes the heavy automatic Trakt startup import; and reduces repeated Next Episodes work.
+v0.0.23 - Fixed Simkl QR image caching so authorization displays the current Simkl code instead of a stale Trakt QR.
 v0.0.22 - Android-safe WatchState and auth groundwork: delays local Trakt cache sync until Kodi is idle, avoids blocking scraping/playback, fixes Trakt device activation polling so the code window stays open correctly, and adds the first read-only Simkl authorization skeleton.
 v0.0.21 - Local Watch State foundation: quietly syncs existing Trakt cache into a local watch-state database in the background, shows a small Trakt synced notification, and prepares for future Simkl/local provider support without remote writes.
 v0.0.20 - Trakt safe repair: uses sync/watched/shows with extended=progress, silently self-heals missing TV watched data, protects local watched status from empty remote pulls, and keeps a manual Trakt Repair Sync button for emergencies.

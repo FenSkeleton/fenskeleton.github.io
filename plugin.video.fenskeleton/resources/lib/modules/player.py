@@ -76,6 +76,7 @@ class FenSkeletonPlayer(xbmc.Player):
                                 total_check_time += 0.10
                         ku.hide_busy_dialog()
                         ku.sleep(1000)
+                        self._simkl_scrobble('start')
                         if st.auto_enable_subs(): self.showSubtitles(True)
                         while self.isPlayingVideo():
                                 try:
@@ -157,6 +158,7 @@ class FenSkeletonPlayer(xbmc.Player):
         def media_watched_marker(self, force_watched=False):
                 self.media_marked = True
                 try:
+                        self._simkl_scrobble('stop')
                         if self.current_point >= 90 or force_watched:
                                 watched_function = ws.mark_movie if self.media_type == 'movie' else ws.mark_episode
                                 watched_params = {'action': 'mark_as_watched', 'tmdb_id': self.tmdb_id, 'title': self.title, 'year': self.year, 'season': self.season, 'episode': self.episode,
@@ -169,6 +171,22 @@ class FenSkeletonPlayer(xbmc.Player):
                                                                         'title': self.title, 'season': self.season, 'episode': self.episode, 'from_playback': 'true'}
                                         Thread(target=self.run_media_progress, args=(ws.set_bookmark, progress_params)).start()
                 except: pass
+
+        def _simkl_scrobble(self, action):
+                try:
+                        from apis.simkl_api import simkl_scrobble
+                        progress = getattr(self, 'current_point', self.playback_percent or 0.0)
+                        Thread(target=simkl_scrobble, kwargs={'action': action, 'media_type': self.media_type,
+                                'tmdb_id': self.tmdb_id, 'imdb_id': self.imdb_id, 'tvdb_id': self.tvdb_id,
+                                'title': self.title, 'year': self.year, 'season': self.season,
+                                'episode': self.episode, 'progress_percent': progress}, daemon=True).start()
+                except Exception: pass
+
+        def onPlayBackPaused(self):
+                self._simkl_scrobble('pause')
+
+        def onPlayBackResumed(self):
+                self._simkl_scrobble('start')
 
         def run_media_progress(self, function, params):
                 try: function(params)
@@ -262,4 +280,3 @@ class FenSkeletonPlayer(xbmc.Player):
                 self.clear_playback_properties()
                 ku.notification('Playback Failed', 3500)
                 return False
-

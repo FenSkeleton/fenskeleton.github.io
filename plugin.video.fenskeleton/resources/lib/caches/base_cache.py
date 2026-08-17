@@ -28,6 +28,14 @@ last_played text, resume_id integer, title text, unique (db_type, media_id, seas
 (db_type text not null, media_id text not null, season integer, episode integer, resume_point text, curr_time text, \
 last_played text, resume_id integer, title text, unique (db_type, media_id, season, episode))',
 'CREATE TABLE IF NOT EXISTS watched_status (db_type text not null, media_id text not null, status text, unique (db_type, media_id))'),
+'simkl_db': (
+'CREATE TABLE IF NOT EXISTS simkl_data (id text unique, data text)',
+'CREATE TABLE IF NOT EXISTS watched \
+(db_type text not null, media_id text not null, season integer, episode integer, last_played text, title text, unique (db_type, media_id, season, episode))',
+'CREATE TABLE IF NOT EXISTS progress \
+(db_type text not null, media_id text not null, season integer, episode integer, resume_point text, curr_time text, \
+last_played text, resume_id integer, title text, unique (db_type, media_id, season, episode))',
+'CREATE TABLE IF NOT EXISTS watched_status (db_type text not null, media_id text not null, status text, unique (db_type, media_id))'),
 'maincache_db': (
 'CREATE TABLE IF NOT EXISTS maincache (id text unique, data text, expires integer)',),
 'metacache_db': (
@@ -57,6 +65,7 @@ expires integer, unique (provider, db_type, tmdb_id, title, year, season, episod
 def locations():
 	return {
 'navigator_db': 'navigator.db', 'watched_db': 'watched.db', 'favorites_db': 'favourites.db', 'settings_db': 'settings.db', 'trakt_db': 'traktcache.db',
+'simkl_db': 'simklcache.db',
 'maincache_db': 'maincache.db', 'metacache_db': 'metacache.db', 'debridcache_db': 'debridcache.db', 'lists_db': 'lists.db', 'tmdb_lists_db': 'tmdb_lists.db',
 'discover_db': 'discover.db', 'external_db': 'external.db', 'episode_groups_db': 'episode_groups.db', 'personal_lists_db': 'personal_lists.db',
 'random_widgets_db': 'random_widgets.db'
@@ -94,7 +103,7 @@ def get_timestamp(offset=0):
 
 def remove_old_databases():
 	databases_path = path.join(kodi_utils.addon_profile(), 'databases/')
-	current_dbs = ('navigator.db', 'watched.db', 'favourites.db', 'traktcache.db', 'maincache.db', 'lists.db', 'tmdb_lists.db', 'discover.db',
+	current_dbs = ('navigator.db', 'watched.db', 'favourites.db', 'traktcache.db', 'simklcache.db', 'maincache.db', 'lists.db', 'tmdb_lists.db', 'discover.db',
 	'metacache.db', 'debridcache.db', 'external.db', 'settings.db', 'episode_groups.db', 'personal_lists_db', 'episode_groups_db', 'personal_lists_db', 'random_widgets_db')
 	try:
 		files = kodi_utils.list_dirs(databases_path)[1]
@@ -106,7 +115,7 @@ def remove_old_databases():
 
 def check_databases_integrity(silent=False):
 	integrity_check = {
-	'settings_db': 1,              'navigator_db': 1,              'watched_db': 3,              'favorites_db': 1,              'trakt_db': 4,
+	'settings_db': 1,              'navigator_db': 1,              'watched_db': 3,              'favorites_db': 1,              'trakt_db': 4, 'simkl_db': 4,
 	'maincache_db': 1,             'metacache_db': 3,              'lists_db': 1,                'tmdb_lists_db': 1,             'discover_db': 1,
 	'debridcache_db': 1,           'external_db': 1,               'episode_groups_db': 1,       'personal_lists_db': 1,         'random_widgets_db': 1
 			}

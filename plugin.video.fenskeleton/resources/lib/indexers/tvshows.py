@@ -21,6 +21,7 @@ class TVShows:
 	'trakt_anime_trending', 'trakt_anime_trending_recent', 'trakt_anime_most_watched', 'trakt_anime_most_favorited')
 	trakt_special = ('trakt_tv_certifications', 'trakt_anime_certifications')
 	trakt_personal = ('trakt_collection', 'trakt_watchlist', 'trakt_collection_lists', 'trakt_watchlist_lists', 'trakt_favorites')
+	simkl_personal = ('simkl_watching', 'simkl_plan_to_watch', 'simkl_completed', 'simkl_on_hold', 'simkl_dropped')
 	
 	def __init__(self, params):
 		self.params = params
@@ -99,6 +100,12 @@ class TVShows:
 				try:
 					if total_pages > page_no: self.new_page = {'new_page': str(page_no + 1), 'paginate_start': self.paginate_start}
 				except: pass
+			elif self.action in self.simkl_personal:
+				self.id_type = 'trakt_dict'
+				data = function('shows', page_no)
+				data, total_pages = self.paginate_list(data, page_no)
+				self.list = [i['media_ids'] for i in data]
+				if total_pages > page_no: self.new_page = {'new_page': str(page_no + 1), 'paginate_start': self.paginate_start}
 			elif self.action == 'trakt_recommendations':
 				self.id_type = 'trakt_dict'
 				data = function('shows')
@@ -185,6 +192,7 @@ class TVShows:
 			browse_in_trakt_list_params = self.build_url({'mode': 'trakt.list.in_trakt_lists', 'media_type': 'tvshow', 'imdb_id': imdb_id, 'is_external': self.is_external,
 										'category_name': '%s In Trakt Lists' % title})
 			trakt_manager_params = self.build_url({'mode': 'trakt_manager_choice', 'tmdb_id': tmdb_id, 'imdb_id': imdb_id, 'tvdb_id': tvdb_id, 'media_type': 'tvshow', 'icon': poster})
+			simkl_manager_params = self.build_url({'mode': 'simkl.simkl_list_manager', 'tmdb_id': tmdb_id, 'imdb_id': imdb_id, 'tvdb_id': tvdb_id, 'media_type': 'tvshow', 'title': title, 'year': year})
 			personal_manager_params = self.build_url({'mode': 'personallists_manager_choice', 'list_type': 'tvshow', 'tmdb_id': tmdb_id, 'title': title,
 										'premiered': premiered, 'current_time': self.current_time, 'icon': poster})
 			tmdb_manager_params = self.build_url({'mode': 'tmdblists_manager_choice', 'media_type': 'tv', 'tmdb_id': tmdb_id, 'icon': poster})
@@ -204,6 +212,7 @@ class TVShows:
 			if self.ai_model_active: cm_append(['similar', ('[B]Browse Similar[/B]', self.window_command % browse_similar_params)])
 			cm_append(['in_trakt_list', ('[B]In Trakt Lists[/B]', self.window_command % browse_in_trakt_list_params)])
 			cm_append(['trakt_manager', ('[B]Trakt Lists Manager[/B]', 'RunPlugin(%s)' % trakt_manager_params)])
+			if settings.simkl_enabled(): cm_append(['simkl_manager', ('[B]Simkl Lists Manager[/B]', 'RunPlugin(%s)' % simkl_manager_params)])
 			cm_append(['personal_manager', ('[B]Personal Lists Manager[/B]', 'RunPlugin(%s)' % personal_manager_params)])
 			cm_append(['tmdb_manager', ('[B]TMDb Lists Manager[/B]', 'RunPlugin(%s)' % tmdb_manager_params)])
 			cm_append(['favorites_manager', ('[B]Favorites Manager[/B]', 'RunPlugin(%s)' % favorites_manager_params)])

@@ -413,8 +413,10 @@ def media_open_action(media_type):
 	return int(get_setting('fenskeleton.media_open_action_%s' % media_type, '0'))
 
 def watched_indicators():
-	if not trakt_user_active(): return 0
-	return int(get_setting('fenskeleton.watched_indicators', '0'))
+	indicator = int(get_setting('fenskeleton.watched_indicators', '0'))
+	if indicator == 1 and not trakt_user_active(): return 0
+	if indicator == 2 and not simkl_enabled(): return 0
+	return indicator
 
 def flatten_episodes():
 	return get_setting('fenskeleton.trakt.flatten_episodes', 'false') == 'true'
@@ -487,6 +489,5 @@ def rpdb_info(media_type):
 
 def use_season_name():
 	return get_setting('fenskeleton.use_season_name', 'false') == 'true'
-
 
 

@@ -1,3 +1,15 @@
+v0.0.24
+- Added a native Simkl cache so Simkl Only works without a Trakt account.
+- Added one-time full Simkl history/progress import followed by activities-gated incremental refreshes.
+- Added Simkl watched indicators, resume points, Continue Watching data, native Next Episodes hints, and Simkl list browsing.
+- Added full Simkl playback start, pause, resume, and stop scrobbling.
+- Added Simkl list manager actions for Watching, Plan to Watch, On Hold, Completed, and Dropped.
+- Moved Trakt-to-Simkl history migration into Tools and kept it strictly manual.
+- Removed the automatic Trakt cache-to-WatchState startup import that processed the full history on every scheduled run.
+- Removed repeated Trakt repair checks from every Next Episodes build and bounded legacy Trakt candidate expansion.
+- Added manual Simkl refresh, rebuild, and WatchState utilities under Tools.
+- Added safe playback-stop handling around Simkl progress writes.
+
 v0.0.23
 - Fixed QR code image caching so Simkl authorization displays the correct Simkl QR instead of a stale Trakt QR.
 - No account changes required.

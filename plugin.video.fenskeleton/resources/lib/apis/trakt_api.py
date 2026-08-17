@@ -13,6 +13,13 @@ from modules.utils import sort_list, sort_for_article, get_datetime, timedelta, 
 							TaskPool, jsondate_to_datetime as js2date
 logger = kodi_utils.logger
 
+def _abort_requested():
+	try:
+		import xbmc
+		return xbmc.Monitor().abortRequested()
+	except Exception:
+		return False
+
 def no_client_key():
 	kodi_utils.notification('Please set a valid Trakt Client ID Key')
 	return None
@@ -46,8 +53,10 @@ def get_trakt_all_pages(params, limit=250):
 def call_trakt(path, params={}, data=None, is_delete=False, with_auth=True, method=None, pagination=False, page_no=1):
 	def send_query():
 		resp = None
+		if _abort_requested(): return None
 		if with_auth:
 			while kodi_utils.get_property('fenskeleton.trakt_refreshing_token') == 'true':
+				if _abort_requested(): return None
 				kodi_utils.logger('refreshing trakt token', '')
 				kodi_utils.sleep(250)
 			try: expires_at = float(get_setting('fenskeleton.trakt.expires'))
@@ -55,6 +64,7 @@ def call_trakt(path, params={}, data=None, is_delete=False, with_auth=True, meth
 			if time.time() > expires_at: trakt_refresh_token()
 			token = get_setting('fenskeleton.trakt.token')
 			if token: headers['Authorization'] = 'Bearer ' + token
+		if _abort_requested(): return None
 		try:
 			if method:
 				if method == 'post': resp = requests.post(API_ENDPOINT % path, headers=headers, timeout=10)
@@ -1071,4 +1081,3 @@ def trakt_sync_activities(force_update=False):
 			trakt_cache.clear_trakt_list_contents_data(item)
 	# if clear_tvshow_watched_cache: clear_watched_tvshow_cache()
 	return 'success'
-

@@ -103,12 +103,24 @@ class Navigator:
 
         def my_content(self):
                 if s.trakt_user_active(): self.add({'mode': 'navigator.trakt_lists_personal'}, 'Trakt Lists', 'trakt')
+                if s.simkl_enabled(): self.add({'mode': 'navigator.simkl_lists_personal'}, 'Simkl Lists', 'lists')
                 self.add({'mode': 'navigator.trakt_lists_public'}, 'Trakt Public Lists', 'trakt')
                 if s.tmdblist_user_active(): self.add({'mode': 'navigator.tmdb_lists_personal'}, 'TMDb Lists', 'tmdb')
                 # if s.tmdblist_user_active(): self.add({'mode': 'tmdblist.get_tmdb_lists'}, 'TMDb Lists', 'tmdb')
                 self.add({'mode': 'personal_lists.get_personal_lists'}, 'Personal Lists', 'lists')
                 self.add({'mode': 'navigator.discover_contents', 'media_type': 'movie', 'show_new': 'false'}, 'Discover Lists (Movies)', 'movies')
                 self.add({'mode': 'navigator.discover_contents', 'media_type': 'tvshow', 'show_new': 'false'}, 'Discover Lists (TV Shows)', 'tv')
+                self.end_directory()
+
+        def simkl_lists_personal(self):
+                self.add({'mode': 'build_tvshow_list', 'action': 'simkl_watching', 'category_name': 'Simkl Watching'}, 'Watching', 'tv')
+                self.add({'mode': 'build_movie_list', 'action': 'simkl_plan_to_watch', 'category_name': 'Simkl Movies - Plan to Watch'}, 'Movies - Plan to Watch', 'movies')
+                self.add({'mode': 'build_tvshow_list', 'action': 'simkl_plan_to_watch', 'category_name': 'Simkl Shows - Plan to Watch'}, 'Shows - Plan to Watch', 'tv')
+                self.add({'mode': 'build_movie_list', 'action': 'simkl_completed', 'category_name': 'Simkl Completed Movies'}, 'Completed Movies', 'movies')
+                self.add({'mode': 'build_tvshow_list', 'action': 'simkl_completed', 'category_name': 'Simkl Completed Shows'}, 'Completed Shows', 'tv')
+                self.add({'mode': 'build_tvshow_list', 'action': 'simkl_on_hold', 'category_name': 'Simkl On Hold'}, 'On Hold', 'tv')
+                self.add({'mode': 'build_tvshow_list', 'action': 'simkl_dropped', 'category_name': 'Simkl Dropped'}, 'Dropped Shows', 'tv')
+                self.add({'mode': 'build_movie_list', 'action': 'simkl_dropped', 'category_name': 'Simkl Dropped Movies'}, 'Dropped Movies', 'movies')
                 self.end_directory()
 
         def tmdb_lists_personal(self):
@@ -232,6 +244,10 @@ class Navigator:
                 if get_setting('fenskeleton.use_viewtypes', 'true') == 'true' and not get_setting('fenskeleton.manual_viewtypes', 'false') == 'true':
                         self.add({'mode': 'navigator.set_view_modes'}, 'Set Views', 'settings2')
                 self.add({'mode': 'navigator.changelog_utils'}, 'Changelog & Log Utils', 'settings2')
+                self.add({'mode': 'simkl.simkl_refresh', 'isFolder': 'false'}, 'Refresh Simkl Watch State', 'settings2')
+                self.add({'mode': 'simkl.simkl_rebuild', 'isFolder': 'false'}, 'Rebuild Watch State from Simkl', 'settings2')
+                self.add({'mode': 'simkl.simkl_import_trakt_history', 'isFolder': 'false'}, 'Import Trakt History to Simkl', 'trakt')
+                self.add({'mode': 'navigator.watch_state_tools'}, 'Watch State Utilities', 'settings2')
                 self.add({'mode': 'build_next_episode_manager'}, 'TV Shows Progress Manager', 'settings2')
                 self.add({'mode': 'navigator.shortcut_folders'}, 'Shortcut Folders Manager', 'settings2')
                 self.add({'mode': 'navigator.maintenance'}, 'Database & Cache Maintenance', 'settings2')
@@ -611,4 +627,3 @@ class Navigator:
                 k.set_category(handle, self.category_name)
                 k.end_directory(handle)
                 k.set_view_mode('view.main', '')
-

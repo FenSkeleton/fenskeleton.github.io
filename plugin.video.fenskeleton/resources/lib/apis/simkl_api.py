@@ -27,7 +27,15 @@ logger = kodi_utils.logger
 API_ENDPOINT = 'https://api.simkl.com/%s'
 PIN_URL = 'https://simkl.com/pin'
 APP_NAME = 'fenskeleton'
-APP_VERSION = '0.0.22'
+APP_VERSION = '0.0.24'
+_LAST_API_ERROR = {}
+
+def _abort_requested():
+	try:
+		import xbmc
+		return xbmc.Monitor().abortRequested()
+	except Exception:
+		return False
 
 
 def _client_id():
@@ -76,13 +84,17 @@ def _headers(with_auth=False):
 	return headers
 
 
-def call_simkl(path, params=None, data=None, with_auth=False, method='get', timeout=20):
+def call_simkl(path, params=None, data=None, with_auth=False, method='get', timeout=12):
+	global _LAST_API_ERROR
+	_LAST_API_ERROR = {}
 	try:
+		if _abort_requested(): return None
 		all_params = _base_params(params or {})
 		if all_params is None: return no_client_key()
 		url = API_ENDPOINT % path.lstrip('/')
 		headers = _headers(with_auth=with_auth)
 		method = (method or 'get').lower()
+		if _abort_requested(): return None
 		if method == 'post':
 			response = requests.post(url, params=all_params, json=data or {}, headers=headers, timeout=timeout)
 		elif method == 'delete':
@@ -100,10 +112,15 @@ def call_simkl(path, params=None, data=None, with_auth=False, method='get', time
 		if status == 409:
 			logger('FenSkeleton Simkl API conflict', 'path=%s body=%s' % (path, body))
 			return {'conflict': True, 'body': body}
+		# Playback state can disappear remotely between callbacks. This is benign.
+		if status == 404 and path.lstrip('/').startswith('scrobble/'):
+			return {'not_found': True}
 		logger('FenSkeleton Simkl API error', 'path=%s status=%s body=%s' % (path, status, body))
+		_LAST_API_ERROR = {'path': path, 'status': status, 'body': body}
 		return None
 	except Exception as e:
 		logger('FenSkeleton Simkl API exception', str(e))
+		_LAST_API_ERROR = {'path': path, 'status': 0, 'error': str(e)}
 		return None
 
 
@@ -215,8 +232,15 @@ def simkl_authenticate(dummy=''):
 			except Exception: pass
 			if get_setting('fenskeleton.simkl.provider_mode', 'empty_setting') in ('empty_setting', '', None, '0'):
 				set_setting('simkl.provider_mode', '1')
+			if _mode() == 1: set_setting('watched_indicators', '2')
 			kodi_utils.notification('Simkl Account Authorized', 3000)
 			logger('FenSkeleton Simkl token', 'received')
+			try:
+				import xbmcgui
+				if xbmcgui.Dialog().yesno('Build Simkl Watch State', 'Download your Simkl watched history, progress and Next Episodes now?'):
+					simkl_sync(force=True, silent=False)
+			except Exception as e:
+				logger('FenSkeleton Simkl initial sync prompt failed', str(e))
 			return True
 	logger('FenSkeleton Simkl authenticate', 'no token returned')
 	kodi_utils.notification('Simkl Error Authorizing', 3000)
@@ -244,7 +268,11 @@ def simkl_status(dummy=''):
 		kodi_utils.notification('Simkl Not Authorized', 3500)
 		logger('FenSkeleton Simkl status', 'not authorized')
 		return False
-	result = call_simkl('users/settings', with_auth=True, method='get', timeout=15) or call_simkl('users/settings', with_auth=True, method='post', timeout=15)
+	result = call_simkl('users/settings', with_auth=True, method='get', timeout=15)
+	errors = [dict(_LAST_API_ERROR)] if not result else []
+	if not result:
+		result = call_simkl('users/settings', with_auth=True, method='post', timeout=15)
+		if not result: errors.append(dict(_LAST_API_ERROR))
 	if result:
 		try:
 			username = result.get('user', {}).get('name') or result.get('user', {}).get('login') or result.get('account', {}).get('name')
@@ -253,9 +281,14 @@ def simkl_status(dummy=''):
 		kodi_utils.notification('Simkl Authorized', 3000)
 		logger('FenSkeleton Simkl status', 'authorized')
 		return True
-	kodi_utils.notification('Simkl Token Stored', 3000)
-	logger('FenSkeleton Simkl status', 'token stored; status endpoint not confirmed')
-	return True
+	invalid_token = any(error.get('status') in (401, 403) for error in errors)
+	if invalid_token:
+		kodi_utils.notification('Simkl Authorization Invalid', 4000)
+		logger('FenSkeleton Simkl status', 'authorization rejected')
+	else:
+		kodi_utils.notification('Unable to Reach Simkl', 4000)
+		logger('FenSkeleton Simkl status', 'API status check failed')
+	return False
 
 
 def simkl_set_mode(dummy=''):
@@ -266,6 +299,11 @@ def simkl_set_mode(dummy=''):
 		choice = xbmcgui.Dialog().select('Simkl Watch State Mode', options, preselect=current)
 		if choice < 0: return False
 		set_setting('simkl.provider_mode', str(choice))
+		# Simkl Only must read indicators and resume points from the native
+		# Simkl cache. Combined mode keeps Trakt as the stable read authority.
+		if choice == 1: set_setting('watched_indicators', '2')
+		elif choice == 2 and settings.trakt_user_active(): set_setting('watched_indicators', '1')
+		elif choice == 0 and int(get_setting('fenskeleton.watched_indicators', '0')) == 2: set_setting('watched_indicators', '0')
 		kodi_utils.notification('Simkl Mode: %s' % options[choice], 3000)
 		logger('FenSkeleton Simkl mode', options[choice])
 		return True
@@ -276,6 +314,258 @@ def simkl_set_mode(dummy=''):
 
 def _utc_now():
 	return time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())
+
+
+def _simkl_data_get(key, default=None):
+	try:
+		dbcon = connect_database('simkl_db')
+		row = dbcon.execute('SELECT data FROM simkl_data WHERE id=?', (key,)).fetchone()
+		dbcon.close()
+		return json.loads(row[0]) if row else default
+	except Exception:
+		return default
+
+
+def _simkl_data_set(key, value):
+	try:
+		dbcon = connect_database('simkl_db')
+		dbcon.execute('INSERT OR REPLACE INTO simkl_data VALUES (?, ?)', (key, json.dumps(value)))
+		dbcon.close()
+		return True
+	except Exception as e:
+		logger('FenSkeleton Simkl cache metadata failed', str(e))
+		return False
+
+
+def _media_object(item, category):
+	if category == 'movies': return item.get('movie') or item
+	return item.get('show') or item.get('anime') or item
+
+
+def _tmdb_id(media):
+	ids = (media or {}).get('ids') or {}
+	value = ids.get('tmdb') or ids.get('tmdb_id')
+	try: return str(int(value))
+	except Exception: return ''
+
+
+def _normalise_all_items(result):
+	"""Turn /sync/all-items into FenSkeleton's watched-cache contract."""
+	watched, statuses, next_items = [], [], []
+	if not isinstance(result, dict): return watched, statuses, next_items
+	for category in ('movies', 'shows', 'anime'):
+		for item in result.get(category, []) or []:
+			media = _media_object(item, category)
+			media_id = _tmdb_id(media)
+			if not media_id: continue
+			title = media.get('title') or item.get('title') or ''
+			status = item.get('status') or ''
+			statuses.append((category, media_id, status))
+			last_watched = item.get('last_watched_at') or item.get('last_watched') or item.get('watched_at') or ''
+			if category == 'movies':
+				if status == 'completed' or item.get('watched_at') or item.get('last_watched_at'):
+					watched.append(('movie', media_id, 0, 0, last_watched, title))
+			else:
+				for season in item.get('seasons', []) or []:
+					season_num = season.get('number', season.get('season', 0))
+					for episode in season.get('episodes', []) or []:
+						episode_num = episode.get('number', episode.get('episode', 0))
+						episode_watched = episode.get('watched_at') or episode.get('last_watched_at') or last_watched
+						if episode.get('watched', True) is not False:
+							watched.append(('episode', media_id, int(season_num or 0), int(episode_num or 0), episode_watched, title))
+			next_info = item.get('next_to_watch_info') or {}
+			if next_info:
+				next_items.append({'media_ids': {'tmdb': int(media_id)}, 'season': int(next_info.get('season') or 1),
+					'episode': max(0, int(next_info.get('episode') or 1) - 1), 'title': title,
+					'last_played': last_watched or '2000-01-01T00:00:00.000Z'})
+	return watched, statuses, next_items
+
+
+def _normalise_playback(result):
+	rows = []
+	for item in result or []:
+		media = item.get('movie') or item.get('show') or item.get('anime') or {}
+		media_id = _tmdb_id(media)
+		if not media_id: continue
+		episode = item.get('episode') or {}
+		if not isinstance(episode, dict): episode = {'number': episode}
+		is_episode = bool(episode) or item.get('season') is not None
+		season_num = episode.get('season') or item.get('season') or 0
+		episode_num = episode.get('number') or episode.get('episode') or item.get('episode_number') or 0
+		progress = item.get('progress') or 0
+		position = item.get('current_position') or 0
+		resume_id = item.get('id') or item.get('playback_id') or 0
+		title = media.get('title') or ''
+		updated = item.get('paused_at') or item.get('updated_at') or _utc_now()
+		rows.append(('episode' if is_episode else 'movie', media_id, int(season_num), int(episode_num), str(progress), str(position), updated, resume_id, title))
+	return rows
+
+
+def _fetch_simkl_library(date_from=None, progress=None):
+	params = {'extended': 'full', 'episode_watched_at': 'yes', 'include_all_episodes': 'yes', 'next_watch_info': 'yes'}
+	if date_from: params['date_from'] = date_from
+	if date_from:
+		result = call_simkl('sync/all-items', params=params, with_auth=True, timeout=90)
+		return result if isinstance(result, dict) else None
+	combined = {'movies': [], 'shows': [], 'anime': []}
+	# Simkl explicitly asks media-centre clients to perform initial full pulls sequentially.
+	for count, category in enumerate(('shows', 'movies', 'anime'), 1):
+		if progress: progress.update((count - 1) * 25, '[B]Downloading Simkl Watch State[/B]', category.title())
+		result = call_simkl('sync/all-items/%s' % category, params=params, with_auth=True, timeout=120)
+		if result is None: return None
+		if isinstance(result, dict):
+			combined[category] = result.get(category, []) or result.get('items', []) or []
+		elif isinstance(result, list): combined[category] = result
+	return combined
+
+
+def simkl_sync(force=False, silent=False):
+	"""Native Simkl -> local cache sync. Full once, then activities-gated deltas."""
+	if not simkl_enabled():
+		if not silent: kodi_utils.notification('Authorize Simkl First', 3500)
+		return False
+	progress = None
+	try:
+		activities = call_simkl('sync/activities', with_auth=True, timeout=30)
+		if not isinstance(activities, dict): raise Exception('activities unavailable')
+		last_sync = _simkl_data_get('last_sync', '')
+		activity_stamp = activities.get('all') or ''
+		if not force and last_sync and activity_stamp == last_sync:
+			if not silent: kodi_utils.notification('Simkl Already Up to Date', 2500)
+			return True
+		previous_activities = _simkl_data_get('activities', {}) or {}
+		removed_changed = any((activities.get(k, {}) or {}).get('removed_from_list') != (previous_activities.get(k, {}) or {}).get('removed_from_list') for k in ('movies', 'tv_shows', 'anime'))
+		full = force or not last_sync or removed_changed
+		if full and not silent:
+			progress = kodi_utils.kodi_progress_background()
+			progress.create('[B]Building Simkl Watch State[/B]', 'This one-time download may take a few minutes')
+		result = _fetch_simkl_library(None if full else last_sync, progress=progress)
+		if result is None: raise Exception('library sync unavailable')
+		# Simkl's bootstrap contract requires the watermark to be captured after
+		# the sequential full-library pull, not before it began.
+		if full:
+			activities = call_simkl('sync/activities', with_auth=True, timeout=30)
+			if not isinstance(activities, dict): raise Exception('post-bootstrap activities unavailable')
+			activity_stamp = activities.get('all') or ''
+			if not activity_stamp: raise Exception('post-bootstrap activity watermark unavailable')
+		watched, statuses, next_items = _normalise_all_items(result)
+		playback = call_simkl('sync/playback', with_auth=True, timeout=45)
+		if playback is None: raise Exception('playback sync unavailable')
+		if progress: progress.update(85, '[B]Building Simkl Watch State[/B]', 'Resume points and Next Episodes')
+		progress_rows = _normalise_playback(playback if isinstance(playback, list) else playback.get('items', []))
+		if full: merged_next = next_items
+		else:
+			touched = set((row[1] for row in statuses))
+			merged_next = [i for i in simkl_next_items() if str(i.get('media_ids', {}).get('tmdb')) not in touched]
+			merged_next.extend(next_items)
+		dbcon = connect_database('simkl_db')
+		try:
+			dbcon.execute('BEGIN IMMEDIATE')
+			if full:
+				dbcon.execute('DELETE FROM watched')
+				dbcon.execute('DELETE FROM watched_status')
+			else:
+				# A delta contains the authoritative current state for every touched
+				# item. Remove its previous rows first so unwatched episodes and list
+				# moves do not linger locally.
+				for media_id in touched:
+					dbcon.execute('DELETE FROM watched WHERE media_id=?', (media_id,))
+					dbcon.execute('DELETE FROM watched_status WHERE media_id=?', (media_id,))
+			if watched: dbcon.executemany('INSERT OR REPLACE INTO watched VALUES (?, ?, ?, ?, ?, ?)', watched)
+			if statuses: dbcon.executemany('INSERT OR REPLACE INTO watched_status VALUES (?, ?, ?)', statuses)
+			dbcon.execute('DELETE FROM progress')
+			if progress_rows: dbcon.executemany('INSERT OR REPLACE INTO progress VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', progress_rows)
+			for key, value in (('next_items', merged_next), ('activities', activities), ('last_sync', activity_stamp or _utc_now())):
+				dbcon.execute('INSERT OR REPLACE INTO simkl_data VALUES (?, ?)', (key, json.dumps(value)))
+			dbcon.execute('COMMIT')
+		except Exception:
+			try: dbcon.execute('ROLLBACK')
+			except Exception: pass
+			raise
+		finally:
+			dbcon.close()
+		message = 'full=%s watched=%s progress=%s next=%s' % (full, len(watched), len(progress_rows), len(merged_next))
+		logger('FenSkeleton Simkl native sync', message)
+		if not silent: kodi_utils.notification('Simkl Sync Complete', 3500)
+		return True
+	except Exception as e:
+		logger('FenSkeleton Simkl native sync failed', str(e))
+		if not silent: kodi_utils.notification('Simkl Sync Failed', 4000)
+		return False
+	finally:
+		try:
+			if progress: progress.close()
+		except Exception: pass
+
+
+def simkl_refresh(dummy=''):
+	return simkl_sync(force=False, silent=False)
+
+
+def simkl_auto_refresh():
+	"""Cheap activities-gated refresh; never performs an unapproved first full pull."""
+	if not simkl_enabled() or not _simkl_data_get('last_sync', ''): return False
+	return simkl_sync(force=False, silent=True)
+
+
+def simkl_rebuild(dummy=''):
+	try:
+		import xbmcgui
+		if not xbmcgui.Dialog().yesno('Rebuild Simkl Watch State', 'Replace the local Simkl cache with a fresh copy from Simkl?'): return False
+	except Exception: pass
+	return simkl_sync(force=True, silent=False)
+
+
+def simkl_next_items():
+	return _simkl_data_get('next_items', []) or []
+
+
+def _simkl_status_items(media_type, status):
+	try:
+		categories = ('movies',) if media_type in ('movie', 'movies') else ('shows', 'anime')
+		dbcon = connect_database('simkl_db')
+		rows = dbcon.execute('SELECT media_id FROM watched_status WHERE db_type IN (%s) AND status=?' % ','.join('?' * len(categories)), tuple(categories) + (status,)).fetchall()
+		dbcon.close()
+		return [{'media_ids': {'tmdb': int(row[0])}} for row in rows]
+	except Exception: return []
+
+
+def simkl_watching(media_type, page_no=1): return _simkl_status_items(media_type, 'watching')
+def simkl_plan_to_watch(media_type, page_no=1): return _simkl_status_items(media_type, 'plantowatch')
+def simkl_completed(media_type, page_no=1): return _simkl_status_items(media_type, 'completed')
+def simkl_on_hold(media_type, page_no=1): return _simkl_status_items(media_type, 'hold')
+def simkl_dropped(media_type, page_no=1): return _simkl_status_items(media_type, 'dropped')
+
+
+def simkl_list_manager(params=None):
+	params = params or {}
+	if not simkl_enabled(): return kodi_utils.notification('Authorize Simkl First', 3500)
+	try:
+		import xbmcgui
+		media_type = params.get('media_type', 'movie')
+		if media_type == 'movie':
+			options = [('Plan to Watch', 'plantowatch'), ('Completed', 'completed'), ('Dropped', 'dropped')]
+			bucket = 'movies'
+		else:
+			options = [('Watching', 'watching'), ('Plan to Watch', 'plantowatch'), ('On Hold', 'hold'), ('Completed', 'completed'), ('Dropped', 'dropped')]
+			bucket = 'shows'
+		choice = xbmcgui.Dialog().select('Move to Simkl List', [i[0] for i in options])
+		if choice < 0: return False
+		status = options[choice][1]
+		item = {'ids': _ids(tmdb_id=params.get('tmdb_id'), imdb_id=params.get('imdb_id'), tvdb_id=params.get('tvdb_id'))}
+		if params.get('title'): item['title'] = params.get('title')
+		if params.get('year'): item['year'] = params.get('year')
+		result = call_simkl('sync/add-to-list', data={'to': status, bucket: [item]}, with_auth=True, method='post', timeout=30)
+		if not result: return kodi_utils.notification('Simkl List Update Failed', 3500)
+		dbcon = connect_database('simkl_db')
+		dbcon.execute('INSERT OR REPLACE INTO watched_status VALUES (?, ?, ?)', (bucket, str(params.get('tmdb_id')), status))
+		dbcon.close()
+		kodi_utils.notification('Simkl: %s' % options[choice][0], 3000)
+		kodi_utils.kodi_refresh()
+		return True
+	except Exception as e:
+		logger('FenSkeleton Simkl list manager failed', str(e))
+		return False
 
 
 def _ids(tmdb_id=None, imdb_id=None, tvdb_id=None):
@@ -365,6 +655,43 @@ def simkl_save_progress(media_type, tmdb_id, title='', year='', season='', episo
 		logger('FenSkeleton Simkl progress failed', str(e))
 		_record_simkl_event('progress_pause', media_type, tmdb_id, season, episode, title, 'failed', str(e))
 		return False
+
+
+def simkl_scrobble(action, media_type, tmdb_id, title='', year='', season='', episode='', tvdb_id='', imdb_id='', progress_percent=0):
+	"""Send a start/pause/stop event using Simkl's native playback lifecycle."""
+	if action == 'pause':
+		return simkl_save_progress(media_type, tmdb_id, title, year, season, episode, tvdb_id, imdb_id, progress_percent)
+	if action not in ('start', 'stop') or not simkl_enabled(): return False
+	try:
+		if media_type == 'movie': payload = {'movie': _movie_item(tmdb_id, title, year, imdb_id)}
+		else: payload = _episode_payload(tmdb_id, tvdb_id, title, year, season, episode, singular=True)
+		payload['progress'] = max(0, min(100, float(progress_percent or 0)))
+		result = call_simkl('scrobble/%s' % action, data=payload, with_auth=True, method='post', timeout=15)
+		ok = bool(result)
+		_record_simkl_event('scrobble_%s' % action, media_type, tmdb_id, season, episode, title, 'ok' if ok else 'failed', 'progress=%s' % payload['progress'])
+		return ok
+	except Exception as e:
+		logger('FenSkeleton Simkl scrobble %s failed' % action, str(e))
+		return False
+
+
+def simkl_mark_episode_batch(tmdb_id, title, episodes, tvdb_id='', remove=False):
+	"""Batch whole-show/season context-menu changes into one serialized Sync write."""
+	if not simkl_enabled() or not episodes: return False
+	seasons = defaultdict(list)
+	for season, episode, watched_at in episodes:
+		item = {'number': int(episode)}
+		if watched_at: item['watched_at'] = watched_at
+		seasons[int(season)].append(item)
+	show = {'title': title or '', 'ids': _ids(tmdb_id=tmdb_id, tvdb_id=tvdb_id),
+		'seasons': [{'number': number, 'episodes': values} for number, values in sorted(seasons.items())]}
+	endpoint = 'sync/history/remove' if remove else 'sync/history'
+	return bool(call_simkl(endpoint, data={'shows': [show]}, with_auth=True, method='post', timeout=60))
+
+
+def simkl_clear_playback(playback_id):
+	if not simkl_enabled() or not playback_id: return False
+	return bool(call_simkl('sync/playback/%s' % playback_id, with_auth=True, method='delete', timeout=15))
 
 
 def _chunk(items, size):

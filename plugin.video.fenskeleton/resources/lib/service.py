@@ -466,28 +466,23 @@ def skin_needs_install_or_upgrade():
 
 
 
-def show_version_changelog_once():
+def show_version_changelog_once(monitor=None):
 	try:
 		from caches.settings_cache import get_setting, set_setting
-		from modules import kodi_utils
-		version = ADDON.getAddonInfo('version') if ADDON else '0.0.23'
-		last_seen = get_setting('fenskeleton.changelog.last_seen_version', 'empty_setting')
+		if ADDON is None: return
+		version = ADDON.getAddonInfo('version')
+		# get_setting expects the fully-qualified window-property key, while
+		# set_setting expects the unqualified database setting id.
+		marker_setting = 'changelog.last_seen_version'
+		marker_property = 'fenskeleton.%s' % marker_setting
+		last_seen = get_setting(marker_property, 'empty_setting')
 		if last_seen == version: return
-		if not str(version).startswith('0.0.23'):
-			return
-		def _show():
-			try:
-				import xbmcgui
-				kodi_utils.sleep(5000)
-				text = 'FenSkeleton updated to v%s[CR][CR]What changed:[CR]- Fixed QR code image caching so Simkl authorization displays the correct Simkl QR instead of a stale Trakt QR.[CR]- No account changes required.' % version
-				xbmcgui.Dialog().ok('FenSkeleton Updated', text)
-				set_setting('changelog.last_seen_version', version)
-			except Exception as e:
-				try: xbmc.log('FenSkeleton: changelog popup error: %s' % str(e), xbmc.LOGWARNING)
-				except Exception: pass
-		Thread(target=_show).start()
+		if monitor and monitor.waitForAbort(5): return
+		text = 'FenSkeleton v%s[CR][CR]This update improves Simkl support and fixes several stability issues.[CR][CR]Highlights:[CR]- Better Simkl integration.[CR]- Fixed a Next Up timestamp bug.[CR]- Improved Kodi shutdown after playback.[CR]- General bug fixes and cleanup.[CR][CR]Thanks for testing FenSkeleton.' % version
+		xbmcgui.Dialog().ok('FenSkeleton Updated', text)
+		set_setting(marker_setting, version)
 	except Exception as e:
-		try: xbmc.log('FenSkeleton: changelog popup schedule error: %s' % str(e), xbmc.LOGWARNING)
+		try: xbmc.log('FenSkeleton: changelog popup error: %s' % str(e), xbmc.LOGWARNING)
 		except Exception: pass
 
 # ---------------------------------------------------------------------------
@@ -496,6 +491,7 @@ def show_version_changelog_once():
 
 def run_service():
 	monitor = xbmc.Monitor()
+	if monitor.abortRequested(): return
 
 	if skin_needs_install_or_upgrade():
 		if install_skin():
@@ -526,19 +522,25 @@ def run_service():
 	except Exception as e:
 		xbmc.log('FenSkeleton: settings warmup error: %s' % str(e), xbmc.LOGWARNING)
 
-	show_version_changelog_once()
+	if monitor.abortRequested(): return
+	show_version_changelog_once(monitor)
 
+	if monitor.abortRequested(): return
 	try:
 		from apis.trakt_api import trakt_silent_repair_check
-		Thread(target=trakt_silent_repair_check, args=('startup',), kwargs={'min_interval': 86400}).start()
+		Thread(target=trakt_silent_repair_check, args=('startup',), kwargs={'min_interval': 86400}, daemon=True).start()
 	except Exception as e:
 		xbmc.log('FenSkeleton: Trakt silent repair startup check error: %s' % str(e), xbmc.LOGWARNING)
 
+	# v0.0.24: never bulk-import Trakt history at startup. Full history
+	# migrations are explicit Tools actions. Simkl's normal refresh is a cheap
+	# activities check and only runs when a baseline already exists.
+	if monitor.abortRequested(): return
 	try:
-		from modules import watchstate
-		Thread(target=watchstate.auto_import_trakt_cache, args=('startup',), kwargs={'min_interval': 21600, 'notify': True}).start()
+		from apis.simkl_api import simkl_auto_refresh
+		Thread(target=simkl_auto_refresh, daemon=True).start()
 	except Exception as e:
-		xbmc.log('FenSkeleton: WatchState startup sync error: %s' % str(e), xbmc.LOGWARNING)
+		xbmc.log('FenSkeleton: Simkl activities refresh error: %s' % str(e), xbmc.LOGWARNING)
 
 	try:
 		from modules.settings import auto_start_fenskeleton
@@ -548,7 +550,9 @@ def run_service():
 	except Exception as e:
 		xbmc.log('FenSkeleton: auto-start error: %s' % str(e), xbmc.LOGWARNING)
 
-	del monitor
+	# Keep the service responsive to Kodi's shutdown signal without waiting for
+	# background network workers. Daemon workers are guarded at their HTTP edge.
+	if not monitor.abortRequested(): monitor.waitForAbort(0.1)
 
 
 if __name__ == '__main__':

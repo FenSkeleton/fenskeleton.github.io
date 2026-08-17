@@ -10,7 +10,8 @@ from modules import metadata, settings
 # from modules.kodi_utils import logger
 
 def get_database(watched_indicators=None):
-	return connect_database({0: 'watched_db', 1: 'trakt_db'}[watched_indicators or settings.watched_indicators()])
+	if watched_indicators is None: watched_indicators = settings.watched_indicators()
+	return connect_database({0: 'watched_db', 1: 'trakt_db', 2: 'simkl_db'}.get(watched_indicators, 'watched_db'))
 
 # def cache_watched_tvshow_status(function, status_type, watched_indicators=None):
 # 	watched_indicators = watched_indicators or settings.watched_indicators()
@@ -35,7 +36,7 @@ def get_database(watched_indicators=None):
 
 def get_hidden_progress_items(watched_indicators):
 	try:
-		if watched_indicators == 0:
+		if watched_indicators in (0, 2):
 			watched_db = get_database()
 			watched_info = watched_db.execute('SELECT status FROM watched_status WHERE db_type = ?', ('hidden_progress_items',)).fetchone()[0]
 			return eval(watched_info) or []
@@ -47,7 +48,7 @@ def update_hidden_progress(media_id):
 	current_hidden = get_hidden_progress_items(watched_indicators)
 	new_hidden = [i for i in current_hidden if i != int(media_id)]
 	if new_hidden == current_hidden: return
-	if watched_indicators == 0: function = hide_unhide_progress_items
+	if watched_indicators in (0, 2): function = hide_unhide_progress_items
 	else: from apis.trakt_api import hide_unhide_progress_items as function
 	function({'action': 'undrop', 'media_type': 'shows', 'media_id': media_id, 'section': 'dropped', 'refresh': 'false'})
 
@@ -77,9 +78,9 @@ def _simkl_thread(action, media_type='', media_id='', title='', year='', season=
 		from apis import simkl_api
 		if not simkl_api.simkl_enabled(): return
 		if action in ('mark_as_watched', 'mark_as_unwatched'):
-			Thread(target=simkl_api.simkl_mark_watched, kwargs={'media_type': media_type, 'tmdb_id': media_id, 'title': title, 'year': year, 'season': season, 'episode': episode, 'tvdb_id': tvdb_id, 'remove': action == 'mark_as_unwatched'}).start()
+			Thread(target=simkl_api.simkl_mark_watched, kwargs={'media_type': media_type, 'tmdb_id': media_id, 'title': title, 'year': year, 'season': season, 'episode': episode, 'tvdb_id': tvdb_id, 'remove': action == 'mark_as_unwatched'}, daemon=True).start()
 		elif action == 'progress':
-			Thread(target=simkl_api.simkl_save_progress, kwargs={'media_type': media_type, 'tmdb_id': media_id, 'title': title, 'year': year, 'season': season, 'episode': episode, 'tvdb_id': tvdb_id, 'progress_percent': progress_percent}).start()
+			Thread(target=simkl_api.simkl_save_progress, kwargs={'media_type': media_type, 'tmdb_id': media_id, 'title': title, 'year': year, 'season': season, 'episode': episode, 'tvdb_id': tvdb_id, 'progress_percent': progress_percent}, daemon=True).start()
 	except Exception:
 		pass
 
@@ -245,6 +246,13 @@ def erase_bookmark(media_type, media_id, season='', episode='', refresh='false')
 				sleep(1000)
 				trakt_progress('clear_progress', media_type, media_id, 0, season, episode, resume_id)
 			except: pass
+		if watched_indicators == 2:
+			try:
+				if media_type == 'episode': resume_id = get_bookmarks_episode(str(media_id), season, watched_db)[int(episode)]['resume_id']
+				else: resume_id = get_bookmarks_movie(watched_db)[str(media_id)]['resume_id']
+				from apis.simkl_api import simkl_clear_playback
+				Thread(target=simkl_clear_playback, args=(resume_id,)).start()
+			except Exception: pass
 		watched_db.execute('DELETE FROM progress where db_type = ? and media_id = ? and season = ? and episode = ?', (media_type, media_id, season, episode))
 		refresh_container(refresh == 'true')
 	except: pass
@@ -274,7 +282,8 @@ def set_bookmark(params):
 		title, season, episode = params.get('title'), params.get('season'), params.get('episode')
 		adjusted_current_time = float(curr_time) - 5
 		resume_point = round(adjusted_current_time/float(total_time)*100,1)
-		_simkl_thread('progress', media_type=media_type, media_id=tmdb_id, title=title, season=season, episode=episode, progress_percent=resume_point)
+		if params.get('from_playback', 'false') != 'true':
+			_simkl_thread('progress', media_type=media_type, media_id=tmdb_id, title=title, season=season, episode=episode, progress_percent=resume_point)
 		watched_indicators = settings.watched_indicators()
 		if watched_indicators == 1:
 			if trakt_official_status(media_type) == False: return
@@ -299,7 +308,9 @@ def mark_movie(params):
 		elif not trakt_watched_status_mark(action, 'movies', tmdb_id): return notification('Error')
 		clear_trakt_collection_watchlist_data('watchlist', media_type)
 	watched_status_mark(watched_indicators, media_type, tmdb_id, action, title=title)
-	_simkl_thread(action, media_type=media_type, media_id=tmdb_id, title=title, year=year)
+	# Playback completion is already committed by Simkl /scrobble/stop.
+	# Keep /sync/history for explicit manual watched/unwatched actions only.
+	if not from_playback: _simkl_thread(action, media_type=media_type, media_id=tmdb_id, title=title, year=year)
 	refresh_container(refresh)
 
 def mark_tvshow(params):
@@ -332,6 +343,11 @@ def mark_tvshow(params):
 			if episode_date and current_date < episode_date: continue
 			insert_append(make_batch_insert(action, 'episode', tmdb_id, season_number, ep_number, last_played, title))
 	batch_watched_status_mark(watched_indicators, insert_list, action)
+	try:
+		from apis.simkl_api import simkl_mark_episode_batch
+		episodes = [(i[2], i[3], i[4] if action == 'mark_as_watched' else '') for i in insert_list]
+		Thread(target=simkl_mark_episode_batch, args=(tmdb_id, title, episodes), kwargs={'tvdb_id': tvdb_id, 'remove': action == 'mark_as_unwatched'}).start()
+	except Exception: pass
 	progress_backround.close()
 	refresh_container()
 
@@ -363,6 +379,11 @@ def mark_season(params):
 		progress_backround.update(int(float(count) / float(len(ep_data)) * 100), '[B]Please Wait..[/B]', display)
 		insert_append(make_batch_insert(action, 'episode', tmdb_id, season_number, ep_number, last_played, title))
 	batch_watched_status_mark(watched_indicators, insert_list, action)
+	try:
+		from apis.simkl_api import simkl_mark_episode_batch
+		episodes = [(i[2], i[3], i[4] if action == 'mark_as_watched' else '') for i in insert_list]
+		Thread(target=simkl_mark_episode_batch, args=(tmdb_id, title, episodes), kwargs={'tvdb_id': tvdb_id, 'remove': action == 'mark_as_unwatched'}).start()
+	except Exception: pass
 	progress_backround.close()
 	refresh_container()
 
@@ -381,6 +402,7 @@ def mark_episode(params):
 		elif not trakt_watched_status_mark(action, media_type, tmdb_id, tvdb_id, season, episode): return notification('Error')
 		clear_trakt_collection_watchlist_data('watchlist', 'tvshow')
 	watched_status_mark(watched_indicators, media_type, tmdb_id, action, season, episode, title)
+	if not from_playback: _simkl_thread(action, media_type=media_type, media_id=tmdb_id, title=title, year=year, season=season, episode=episode, tvdb_id=tvdb_id)
 	update_hidden_progress(tmdb_id)
 	refresh_container(refresh)
 
@@ -504,4 +526,3 @@ def get_recently_watched(media_type, short_list=0):
 					for i in data]
 		if short_list: data = data[:20]
 	return data
-
