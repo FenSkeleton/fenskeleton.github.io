@@ -1,3 +1,9 @@
+v0.0.25 - Source Failover Playback
+- Added shared source failover for manual selection, Autoplay, Random Next Up, and scraped Next Episode playback.
+- Failed sources now advance through the existing ordered scrape results without re-scraping or looping back to earlier choices.
+- Added "Auto Try Next Source on Failure" under Playback Utilities, enabled by default.
+- A single "No playable streams found" message is now shown only after every eligible source has failed.
+
 v0.0.24
 - Added a native Simkl cache so Simkl Only works without a Trakt account.
 - Added one-time full Simkl history/progress import followed by activities-gated incremental refreshes.

@@ -72,6 +72,9 @@ def playback_settings():
 def limit_resolve():
 	return get_setting('fenskeleton.playback.limit_resolve', 'false') == 'true'
 
+def auto_try_next_source():
+	return get_setting('fenskeleton.playback.auto_try_next_source', 'true') == 'true'
+
 def movies_directory():
 	return translate_path(get_setting('fenskeleton.movies_directory'))
 	
@@ -489,5 +492,4 @@ def rpdb_info(media_type):
 
 def use_season_name():
 	return get_setting('fenskeleton.use_season_name', 'false') == 'true'
-
 
