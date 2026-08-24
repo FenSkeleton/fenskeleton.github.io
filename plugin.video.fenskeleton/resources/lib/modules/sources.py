@@ -633,86 +633,121 @@ class Sources():
                 self._kill_progress_dialog()
                 return FenSkeletonPlayer().run(link, 'video')
 
-        def play_file(self, results, source={}):
-                self.playback_successful, self.cancel_all_playback = None, False
+        def _failover_mode(self):
+                if self.params.get('random_next_up', 'false') == 'true' or self.meta.get('random_next_up') == 'true': return 'random_next_up'
+                if self.autoplay: return 'autoplay'
+                return 'manual'
+
+        def _failover_provider(self, item):
+                provider = item.get('scrape_provider', 'unknown')
+                if provider == 'external': provider = item.get('debrid') or item.get('provider') or provider
+                elif provider == 'folders': provider = item.get('source') or provider
+                return str(provider).replace('.me', '')
+
+        def _failover_log(self, message):
+                kodi_utils.logger('FenSkeleton source failover', message)
+
+        def _failover_candidates(self, results, source):
+                start_index = results.index(source)
+                failover_enabled = settings.auto_try_next_source() and not self.limit_resolve
+                if failover_enabled: candidates = list(enumerate(results[start_index:], start_index))
+                else: candidates = [(start_index, source)]
+                return start_index, candidates, failover_enabled
+
+        def _prepare_failover_items(self, candidates, failover_enabled):
+                processed_items = []
                 retry_easynews = settings.easynews_playback_method('retry')
                 retry_easynews_limit = settings.easynews_playback_method_retries()
+                for display_count, (source_index, item) in enumerate(candidates, 1):
+                        resolve_item = dict(item)
+                        provider = self._failover_provider(item)
+                        provider_text = provider.upper()
+                        extra_info = '[B]%s[/B] | [B]%s[/B] | %s' % (item['quality'], item['size_label'], item['extraInfo'])
+                        display_name = item['display_name'].upper()
+                        resolve_item['resolve_display'] = '%02d. [B]%s[/B][CR]%s[CR]%s' % (display_count, provider_text, extra_info, display_name)
+                        processed_items.append((source_index, resolve_item))
+                        # Preserve the legacy Easynews retry option only when
+                        # shared source failover is disabled. Failover itself
+                        # never attempts the same scraped source twice.
+                        if not failover_enabled and provider.lower() == 'easynews' and retry_easynews:
+                                for retry in range(1, retry_easynews_limit):
+                                        retry_item = dict(item)
+                                        retry_item['resolve_display'] = '%02d. [B]%s (RETRYx%s)[/B][CR]%s[CR]%s' % (display_count, provider_text, retry, extra_info, display_name)
+                                        processed_items.append((source_index, retry_item))
+                return processed_items
+
+        def play_file(self, results, source=None):
+                self.playback_successful, self.cancel_all_playback = None, False
+                monitor, player, url = kodi_utils.kodi_monitor(), None, None
+                exhausted = False
                 try:
                         kodi_utils.hide_busy_dialog()
-                        url = None
                         results = [i for i in results if not 'Uncached' in i.get('cache_provider', '')]
-                        if not source: source = results[0]
-                        items = [source]
-                        if not self.limit_resolve: 
-                                source_index = results.index(source)
-                                results.remove(source)
-                                items_prev = results[:source_index]
-                                items_prev.reverse()
-                                items_next = results[source_index:]
-                                items = items + items_next + items_prev
-                        processed_items = []
-                        processed_items_append = processed_items.append
-                        for count, item in enumerate(items, 1):
-                                resolve_item = dict(item)
-                                provider = item['scrape_provider']
-                                if provider == 'external': provider = item['debrid'].replace('.me', '')
-                                elif provider == 'folders': provider = item['source']
-                                provider_text = provider.upper()
-                                extra_info = '[B]%s[/B] | [B]%s[/B] | %s' %  (item['quality'], item['size_label'], item['extraInfo'])
-                                display_name = item['display_name'].upper()
-                                resolve_item['resolve_display'] = '%02d. [B]%s[/B][CR]%s[CR]%s' % (count, provider_text, extra_info, display_name)
-                                processed_items_append(resolve_item)
-                                if provider == 'easynews' and retry_easynews:
-                                        for retry in range(1, retry_easynews_limit):
-                                                resolve_item = dict(item)
-                                                resolve_item['resolve_display'] = '%02d. [B]%s (RETRYx%s)[/B][CR]%s[CR]%s' % (count, provider_text, retry, extra_info, display_name)
-                                                processed_items_append(resolve_item)
-                        items = list(processed_items)
-                        if not self.continue_resolve_check(): return self._kill_progress_dialog()
-                        kodi_utils.hide_busy_dialog()
-                        self.playback_percent = self.get_playback_percent()
-                        if self.playback_percent == None: return self._kill_progress_dialog()
-                        if not self.resolve_dialog_made: self._make_resolve_dialog()
-                        if self.background: kodi_utils.sleep(1000)
-                        monitor = kodi_utils.kodi_monitor()
-                        for count, item in enumerate(items, 1):
-                                try:
+                        if not results: exhausted = True
+                        else:
+                                if source is None: source = results[0]
+                                start_index, candidates, failover_enabled = self._failover_candidates(results, source)
+                                mode = self._failover_mode()
+                                self._failover_log('mode=%s start_index=%s total=%s' % (mode, start_index, len(results)))
+                                items = self._prepare_failover_items(candidates, failover_enabled)
+                                if not self.continue_resolve_check(): return self._kill_progress_dialog()
+                                kodi_utils.hide_busy_dialog()
+                                self.playback_percent = self.get_playback_percent()
+                                if self.playback_percent == None: return self._kill_progress_dialog()
+                                if not self.resolve_dialog_made: self._make_resolve_dialog()
+                                if self.background: kodi_utils.sleep(1000)
+                                attempted = set()
+                                for attempt_count, (source_index, item) in enumerate(items, 1):
+                                        if monitor.abortRequested(): return self._kill_progress_dialog()
+                                        if failover_enabled and source_index in attempted: continue
+                                        attempted.add(source_index)
+                                        provider = self._failover_provider(item)
+                                        if attempt_count > 1: self._failover_log('trying next index=%s provider=%s' % (source_index, provider))
                                         kodi_utils.hide_busy_dialog()
-                                        if not self.progress_dialog: break
+                                        if not self.progress_dialog: return
                                         self.progress_dialog.reset_is_cancelled()
                                         self.progress_dialog.update_resolver(text=item['resolve_display'])
                                         self.progress_dialog.busy_spinner()
-                                        if count > 1:
-                                                kodi_utils.sleep(200)
-                                                try: del player
-                                                except: pass
+                                        if attempt_count > 1: kodi_utils.sleep(200)
                                         url, self.playback_successful, self.cancel_all_playback = None, None, False
-                                        self.playing_filename = item['name']
-                                        self.playing_item = item
+                                        self.playing_filename, self.playing_item = item['name'], item
                                         player = FenSkeletonPlayer()
-                                        try:
-                                                if self.progress_dialog.iscanceled() or monitor.abortRequested(): break
-                                                url = self.resolve_sources(item)
-                                                if url:
-                                                        resolve_percent = 0
-                                                        self.progress_dialog.busy_spinner('false')
-                                                        self.progress_dialog.update_resolver(percent=resolve_percent)
-                                                        kodi_utils.sleep(200)
-                                                        player.run(url, self)
-                                                else: continue
-                                                if self.cancel_all_playback: break
-                                                if self.playback_successful: break
-                                                if count == len(items):
-                                                        self.cancel_all_playback = True
-                                                        player.stop()
-                                                        break
+                                        if self.progress_dialog.iscanceled():
+                                                self.cancel_all_playback = True
+                                                break
+                                        try: url = self.resolve_sources(item)
+                                        except Exception as error:
+                                                self._failover_log('failed index=%s provider=%s reason=resolve_exception:%s' % (source_index, provider, error))
+                                                continue
+                                        if not url:
+                                                self._failover_log('failed index=%s provider=%s reason=resolve_failed' % (source_index, provider))
+                                                continue
+                                        self.progress_dialog.busy_spinner('false')
+                                        self.progress_dialog.update_resolver(percent=0)
+                                        kodi_utils.sleep(200)
+                                        if monitor.abortRequested(): return self._kill_progress_dialog()
+                                        try: player.run(url, self)
+                                        except Exception as error:
+                                                self.playback_successful = False
+                                                self._failover_log('failed index=%s provider=%s reason=playback_exception:%s' % (source_index, provider, error))
+                                        if self.cancel_all_playback: break
+                                        if self.playback_successful:
+                                                self._failover_log('success index=%s provider=%s' % (source_index, provider))
+                                                return
+                                        self._failover_log('failed index=%s provider=%s reason=playback_did_not_start' % (source_index, provider))
+                                        try: player.stop()
                                         except: pass
-                                except: pass
-                except: self._kill_progress_dialog()
+                                exhausted = not self.cancel_all_playback
+                except Exception as error:
+                        self._failover_log('failed index=unknown provider=unknown reason=coordinator_exception:%s' % error)
+                        exhausted = not self.cancel_all_playback
+                finally:
+                        try: del monitor
+                        except: pass
                 if self.cancel_all_playback: return self._kill_progress_dialog()
-                if not self.playback_successful or not url: self.playback_failed_action()
-                try: del monitor
-                except: pass
+                if exhausted:
+                        self._failover_log('exhausted candidates total=%s' % len(results))
+                        self.playback_failed_action()
 
         def get_playback_percent(self):
                 if self.media_type == 'movie': percent = watched_status.get_progress_status_movie(watched_status.get_bookmarks_movie(), str(self.tmdb_id))
@@ -732,9 +767,7 @@ class Sources():
 
         def playback_failed_action(self):
                 self._kill_progress_dialog()
-                if self.prescrape and self.autoplay:
-                        self.resolve_dialog_made, self.prescrape, self.prescrape_sources = False, False, []
-                        self.get_sources()
+                kodi_utils.notification('No playable streams found', 3500, self.meta.get('poster'))
 
         def still_watching_check(self):
                 watching_check = self.nextep_settings['watching_check']
@@ -869,4 +902,3 @@ class Sources():
 
         def _quality_length_final(self, items, dummy):
                 return len(items)
-

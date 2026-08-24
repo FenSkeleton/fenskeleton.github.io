@@ -2867,6 +2867,14 @@
                       </item>
                       <item>
                           <visible>Container(2000).HasFocus(80)</visible>
+                          <property name="setting_label">Auto Try Next Source on Failure</property>
+                          <property name="setting_type">boolean</property>
+                          <property name="setting_value">$INFO[Window(10000).Property(fenskeleton.playback.auto_try_next_source)]</property>
+                          <property name="setting_description">Automatically try each later source from the current scrape when a source cannot resolve or start playback</property>
+                          <onclick>RunPlugin(plugin://plugin.video.fenskeleton/?mode=settings_manager.set_boolean&amp;setting_id=playback.auto_try_next_source)</onclick>
+                      </item>
+                      <item>
+                          <visible>Container(2000).HasFocus(80)</visible>
                           <property name="setting_label">Limit Resolve Attempts to Selected Result</property>
                           <property name="setting_type">boolean</property>
                           <property name="setting_value">$INFO[Window(10000).Property(fenskeleton.playback.limit_resolve)]</property>
@@ -2987,4 +2995,3 @@
         </control>
     </controls>
 </window>
-

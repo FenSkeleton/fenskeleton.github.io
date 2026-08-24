@@ -14,6 +14,7 @@ class FenSkeletonPlayer(xbmc.Player):
         def run(self, url=None, obj=None):
                 ku.hide_busy_dialog()
                 self.clear_playback_properties()
+                self.source_failover_managed = obj not in (None, 'video')
                 if not url: return self.run_error()
                 try: return self.play_video(url, obj)
                 except: return self.run_error()
@@ -278,5 +279,7 @@ class FenSkeletonPlayer(xbmc.Player):
                 try: self.sources_object.playback_successful = False
                 except: pass
                 self.clear_playback_properties()
-                ku.notification('Playback Failed', 3500)
+                # Source playback owns retry/final-failure UI. Generic direct
+                # playback has no candidate list, so retain its notification.
+                if not getattr(self, 'source_failover_managed', False): ku.notification('Playback Failed', 3500)
                 return False
